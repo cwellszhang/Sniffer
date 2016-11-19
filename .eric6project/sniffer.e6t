@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Tasks SYSTEM "Tasks-6.0.dtd">
+<!-- eric6 tasks file for project sniffer -->
+<!-- Saved: 2016-11-19, 23:42:49 -->
+<Tasks version="6.0">
+  <ProjectScanFilter></ProjectScanFilter>
+  <Task priority="1" completed="False" type="1" uid="{a7e1e14d-e597-4b2d-a512-395ba30e5bef}">
+    <Summary>TODO: not implemented yet</Summary>
+    <Description></Description>
+    <Created>2016-11-19, 23:42:46</Created>
+    <Resource>
+      <Filename>choose_eth.py</Filename>
+      <Linenumber>29</Linenumber>
+    </Resource>
+  </Task>
+</Tasks>
