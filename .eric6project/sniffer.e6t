@@ -1,85 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-6.0.dtd">
 <!-- eric6 tasks file for project sniffer -->
-<!-- Saved: 2016-11-20, 14:15:10 -->
+<!-- Saved: 2016-11-20, 22:23:26 -->
 <Tasks version="6.0">
   <ProjectScanFilter></ProjectScanFilter>
-  <Task priority="1" completed="False" type="1" uid="{66adc360-d528-4632-802d-ccc1f78c0edb}">
+  <Task priority="1" completed="False" type="1" uid="{349b389d-69f1-4a3d-adcd-607928705250}">
     <Summary>TODO: not implemented yet</Summary>
     <Description></Description>
-    <Created>2016-11-20, 13:18:06</Created>
-    <Resource>
-      <Filename>eth.py</Filename>
-      <Linenumber>35</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" type="1" uid="{e6add313-e022-438d-8483-4e1003f4f243}">
-    <Summary>TODO: not implemented yet</Summary>
-    <Description></Description>
-    <Created>2016-11-20, 13:18:06</Created>
-    <Resource>
-      <Filename>eth.py</Filename>
-      <Linenumber>46</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" type="1" uid="{8dee6804-d608-41c9-b7ef-5fdd0d93d1e3}">
-    <Summary>TODO: not implemented yet</Summary>
-    <Description></Description>
-    <Created>2016-11-20, 13:18:06</Created>
-    <Resource>
-      <Filename>eth.py</Filename>
-      <Linenumber>57</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" type="1" uid="{de78c52a-c28e-47eb-8217-2d1e009c0d68}">
-    <Summary>TODO: not implemented yet</Summary>
-    <Description></Description>
-    <Created>2016-11-20, 13:18:06</Created>
-    <Resource>
-      <Filename>eth.py</Filename>
-      <Linenumber>68</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" type="1" uid="{cde0395b-217a-4999-8a90-bbe2fcda5b17}">
-    <Summary>TODO: not implemented yet</Summary>
-    <Description></Description>
-    <Created>2016-11-20, 13:36:56</Created>
-    <Resource>
-      <Filename>choose_eth.py</Filename>
-      <Linenumber>40</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" type="1" uid="{c7936b50-32dc-4c18-af22-4891c0387ed5}">
-    <Summary>TODO: not implemented yet</Summary>
-    <Description></Description>
-    <Created>2016-11-20, 13:36:56</Created>
-    <Resource>
-      <Filename>choose_eth.py</Filename>
-      <Linenumber>49</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" type="1" uid="{984a9eae-9b2d-4288-85af-b589302c4b35}">
-    <Summary>TODO: not implemented yet</Summary>
-    <Description></Description>
-    <Created>2016-11-20, 13:41:59</Created>
-    <Resource>
-      <Filename>begin_cat.py</Filename>
-      <Linenumber>32</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" type="1" uid="{57cdd60a-1a1f-47af-9b15-90266bee49b4}">
-    <Summary>TODO: not implemented yet</Summary>
-    <Description></Description>
-    <Created>2016-11-20, 13:41:59</Created>
-    <Resource>
-      <Filename>begin_cat.py</Filename>
-      <Linenumber>40</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" type="1" uid="{fb8a075d-07c4-4c24-9858-f2c52e610965}">
-    <Summary>TODO: not implemented yet</Summary>
-    <Description></Description>
-    <Created>2016-11-20, 14:15:07</Created>
+    <Created>2016-11-20, 22:23:23</Created>
     <Resource>
       <Filename>temp.py</Filename>
       <Linenumber>35</Linenumber>

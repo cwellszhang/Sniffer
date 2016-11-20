@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project sniffer -->
-<!-- Saved: 2016-11-19, 21:25:34 -->
+<!-- Saved: 2016-11-20, 21:52:46 -->
 <!-- Copyright (C) 2016 ,  -->
 <Project version="5.1">
   <Language></Language>
@@ -15,6 +15,9 @@
   <Sources>
     <Source>Ui_main.py</Source>
     <Source>__init__.py</Source>
+    <Source>sniffer.py</Source>
+    <Source>temp.py</Source>
+    <Source>util.py</Source>
   </Sources>
   <Forms>
     <Form>main.ui</Form>
@@ -22,7 +25,9 @@
   <Translations/>
   <Resources/>
   <Interfaces/>
-  <Others/>
+  <Others>
+    <Other>utils.py2</Other>
+  </Others>
   <Vcs>
     <VcsType>None</VcsType>
   </Vcs>

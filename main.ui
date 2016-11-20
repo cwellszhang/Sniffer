@@ -188,13 +188,31 @@
      <height>201</height>
     </rect>
    </property>
+   <property name="focusPolicy">
+    <enum>Qt::ClickFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::DefaultContextMenu</enum>
+   </property>
+   <property name="statusTip">
+    <string notr="true"/>
+   </property>
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
    <property name="editTriggers">
     <set>QAbstractItemView::NoEditTriggers</set>
    </property>
+   <property name="dragDropOverwriteMode">
+    <bool>false</bool>
+   </property>
    <property name="showGrid">
+    <bool>false</bool>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+   <property name="cornerButtonEnabled">
     <bool>false</bool>
    </property>
    <property name="rowCount">
