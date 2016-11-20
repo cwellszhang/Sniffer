@@ -26,17 +26,7 @@
     <string>选择网卡：</string>
    </property>
   </widget>
-  <widget class="QListWidget" name="listWidget">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>110</y>
-     <width>481</width>
-     <height>192</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="btn_begin">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -49,7 +39,7 @@
     <string>开始抓包</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="btn_stop">
    <property name="geometry">
     <rect>
      <x>140</x>
@@ -62,7 +52,7 @@
     <string>停止抓包</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_3">
+  <widget class="QPushButton" name="btn_filter">
    <property name="geometry">
     <rect>
      <x>280</x>
@@ -75,7 +65,7 @@
     <string>过滤包</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_4">
+  <widget class="QPushButton" name="btn_search">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -88,7 +78,7 @@
     <string>搜索</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_5">
+  <widget class="QPushButton" name="btn_viewlog">
    <property name="geometry">
     <rect>
      <x>160</x>
@@ -101,7 +91,7 @@
     <string>查看日志</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_6">
+  <widget class="QPushButton" name="btn_recover">
    <property name="geometry">
     <rect>
      <x>300</x>
@@ -114,7 +104,7 @@
     <string>报文重组</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_7">
+  <widget class="QPushButton" name="btn_save">
    <property name="geometry">
     <rect>
      <x>430</x>
@@ -127,11 +117,11 @@
     <string>保存TXT</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_8">
+  <widget class="QPushButton" name="btn_exit">
    <property name="geometry">
     <rect>
-     <x>540</x>
-     <y>630</y>
+     <x>530</x>
+     <y>20</y>
      <width>113</width>
      <height>32</height>
     </rect>
@@ -144,8 +134,8 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>410</y>
-     <width>481</width>
+     <y>400</y>
+     <width>631</width>
      <height>241</height>
     </rect>
    </property>
@@ -176,7 +166,7 @@
     <string>0 Kb/s</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox">
+  <widget class="QComboBox" name="choose_eth">
    <property name="geometry">
     <rect>
      <x>100</x>
@@ -186,6 +176,86 @@
     </rect>
    </property>
   </widget>
+  <widget class="QTableWidget" name="package_info">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>100</y>
+     <width>641</width>
+     <height>201</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
+   </property>
+   <property name="showGrid">
+    <bool>false</bool>
+   </property>
+   <property name="rowCount">
+    <number>0</number>
+   </property>
+   <attribute name="horizontalHeaderVisible">
+    <bool>true</bool>
+   </attribute>
+   <attribute name="horizontalHeaderDefaultSectionSize">
+    <number>100</number>
+   </attribute>
+   <attribute name="verticalHeaderVisible">
+    <bool>false</bool>
+   </attribute>
+   <attribute name="verticalHeaderDefaultSectionSize">
+    <number>18</number>
+   </attribute>
+   <attribute name="verticalHeaderShowSortIndicator" stdset="0">
+    <bool>false</bool>
+   </attribute>
+   <column>
+    <property name="text">
+     <string notr="true">时间</string>
+    </property>
+    <property name="textAlignment">
+     <set>AlignCenter</set>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>源地址</string>
+    </property>
+    <property name="textAlignment">
+     <set>AlignCenter</set>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>目的地址</string>
+    </property>
+    <property name="textAlignment">
+     <set>AlignCenter</set>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>协议类型</string>
+    </property>
+    <property name="textAlignment">
+     <set>AlignCenter</set>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>信息</string>
+    </property>
+    <property name="textAlignment">
+     <set>AlignCenter</set>
+    </property>
+   </column>
+  </widget>
   <action name="actionMenubar">
    <property name="text">
     <string>menubar</string>
@@ -193,24 +263,7 @@
   </action>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>comboBox</sender>
-   <signal>activated(QString)</signal>
-   <receiver>snifferUI</receiver>
-   <slot>combo_box_clicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>449</x>
-     <y>36</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>523</x>
-     <y>11</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>combo_box_clicked()</slot>
  </slots>
