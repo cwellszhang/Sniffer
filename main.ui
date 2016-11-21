@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>677</width>
-    <height>695</height>
+    <width>1050</width>
+    <height>814</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -68,8 +68,8 @@
   <widget class="QPushButton" name="btn_search">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>340</y>
+     <x>10</x>
+     <y>470</y>
      <width>113</width>
      <height>32</height>
     </rect>
@@ -81,8 +81,8 @@
   <widget class="QPushButton" name="btn_viewlog">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>340</y>
+     <x>150</x>
+     <y>470</y>
      <width>113</width>
      <height>32</height>
     </rect>
@@ -94,8 +94,8 @@
   <widget class="QPushButton" name="btn_recover">
    <property name="geometry">
     <rect>
-     <x>300</x>
-     <y>340</y>
+     <x>290</x>
+     <y>470</y>
      <width>113</width>
      <height>32</height>
     </rect>
@@ -107,8 +107,8 @@
   <widget class="QPushButton" name="btn_save">
    <property name="geometry">
     <rect>
-     <x>430</x>
-     <y>340</y>
+     <x>420</x>
+     <y>470</y>
      <width>113</width>
      <height>32</height>
     </rect>
@@ -133,18 +133,18 @@
   <widget class="QTextBrowser" name="textBrowser">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>400</y>
-     <width>631</width>
-     <height>241</height>
+     <x>0</x>
+     <y>530</y>
+     <width>1051</width>
+     <height>251</height>
     </rect>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>360</x>
-     <y>380</y>
+     <x>910</x>
+     <y>30</y>
      <width>60</width>
      <height>16</height>
     </rect>
@@ -156,8 +156,8 @@
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>430</x>
-     <y>380</y>
+     <x>980</x>
+     <y>30</y>
      <width>60</width>
      <height>16</height>
     </rect>
@@ -182,10 +182,10 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>0</x>
      <y>100</y>
-     <width>641</width>
-     <height>201</height>
+     <width>1051</width>
+     <height>331</height>
     </rect>
    </property>
    <property name="focusPolicy">
@@ -206,8 +206,23 @@
    <property name="dragDropOverwriteMode">
     <bool>false</bool>
    </property>
+   <property name="alternatingRowColors">
+    <bool>true</bool>
+   </property>
+   <property name="selectionMode">
+    <enum>QAbstractItemView::ExtendedSelection</enum>
+   </property>
+   <property name="selectionBehavior">
+    <enum>QAbstractItemView::SelectRows</enum>
+   </property>
    <property name="showGrid">
     <bool>false</bool>
+   </property>
+   <property name="gridStyle">
+    <enum>Qt::DashLine</enum>
+   </property>
+   <property name="sortingEnabled">
+    <bool>true</bool>
    </property>
    <property name="wordWrap">
     <bool>false</bool>
@@ -225,7 +240,7 @@
     <number>100</number>
    </attribute>
    <attribute name="verticalHeaderVisible">
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
    <attribute name="verticalHeaderDefaultSectionSize">
     <number>18</number>
@@ -238,7 +253,7 @@
      <string notr="true">时间</string>
     </property>
     <property name="textAlignment">
-     <set>AlignCenter</set>
+     <set>AlignLeading|AlignVCenter</set>
     </property>
    </column>
    <column>
@@ -246,7 +261,7 @@
      <string>源地址</string>
     </property>
     <property name="textAlignment">
-     <set>AlignCenter</set>
+     <set>AlignLeading|AlignVCenter</set>
     </property>
    </column>
    <column>
@@ -254,7 +269,7 @@
      <string>目的地址</string>
     </property>
     <property name="textAlignment">
-     <set>AlignCenter</set>
+     <set>AlignLeading|AlignVCenter</set>
     </property>
    </column>
    <column>
@@ -262,7 +277,15 @@
      <string>协议类型</string>
     </property>
     <property name="textAlignment">
-     <set>AlignCenter</set>
+     <set>AlignLeading|AlignVCenter</set>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>长度</string>
+    </property>
+    <property name="textAlignment">
+     <set>AlignLeading|AlignVCenter</set>
     </property>
    </column>
    <column>
@@ -270,7 +293,7 @@
      <string>信息</string>
     </property>
     <property name="textAlignment">
-     <set>AlignCenter</set>
+     <set>AlignLeading|AlignVCenter</set>
     </property>
    </column>
   </widget>

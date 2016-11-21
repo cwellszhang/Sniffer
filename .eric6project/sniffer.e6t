@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-6.0.dtd">
 <!-- eric6 tasks file for project sniffer -->
-<!-- Saved: 2016-11-20, 22:23:26 -->
+<!-- Saved: 2016-11-21, 18:05:44 -->
 <Tasks version="6.0">
   <ProjectScanFilter></ProjectScanFilter>
-  <Task priority="1" completed="False" type="1" uid="{349b389d-69f1-4a3d-adcd-607928705250}">
+  <Task priority="1" completed="False" type="1" uid="{8699179b-e4bd-49c5-a9f5-1e1841aa5bfd}">
     <Summary>TODO: not implemented yet</Summary>
     <Description></Description>
-    <Created>2016-11-20, 22:23:23</Created>
+    <Created>2016-11-21, 18:05:41</Created>
     <Resource>
       <Filename>temp.py</Filename>
       <Linenumber>35</Linenumber>
