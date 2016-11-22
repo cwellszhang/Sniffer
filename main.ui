@@ -237,7 +237,7 @@
     <number>0</number>
    </property>
    <property name="columnCount">
-    <number>7</number>
+    <number>8</number>
    </property>
    <attribute name="horizontalHeaderVisible">
     <bool>true</bool>
@@ -308,6 +308,7 @@
      <set>AlignLeading|AlignVCenter</set>
     </property>
    </column>
+   <column/>
    <column/>
   </widget>
   <widget class="QTextBrowser" name="textBrowser_2">

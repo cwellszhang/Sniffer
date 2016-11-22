@@ -69,7 +69,7 @@ class Ui_snifferUI(object):
         self.package_info.setWordWrap(False)
         self.package_info.setCornerButtonEnabled(False)
         self.package_info.setRowCount(0)
-        self.package_info.setColumnCount(7)
+        self.package_info.setColumnCount(8)
         self.package_info.setObjectName("package_info")
         item = QtWidgets.QTableWidgetItem()
         item.setText("时间")

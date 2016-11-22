@@ -9,7 +9,8 @@ Module implementing sniffer.
 from pcap import *
 import dpkt, datetime
 from util import *
-import time, re, json
+import time, re, json, codecs
+import struct
 import threading, Queue
 from PyQt5.QtCore import pyqtSlot
 
@@ -36,7 +37,8 @@ class sniffer(QDialog, Ui_snifferUI):
         self.package_info.setColumnWidth(2,150) 
         self.package_info.setColumnWidth(1,150)
         self.package_info.setColumnHidden(6,True)
-        #self.package_info.setColumnWidth(6, 500)
+        self.package_info.setColumnHidden(7,True)
+
     def get_btnStop(self):
          return self.btn_stop
     def set_btnStop(self, stop):
@@ -72,6 +74,7 @@ class sniffer(QDialog, Ui_snifferUI):
              info['spa']=inet_to_str(arp.spa) #发送方IP地址
              info['tha']=mac_addr(arp.tha)    #接收方MAC地址
              info['tpa']=inet_to_str(arp.tpa) #接收方IP地址
+             data = arp.data
              package['info']=info 
              timeItem = QTableWidgetItem("  "+package['timestamp'])
              srcItem = QTableWidgetItem("  "+info['sha'])
@@ -86,7 +89,7 @@ class sniffer(QDialog, Ui_snifferUI):
              self.package_info.setItem(i, 2, dstItem)
              self.package_info.setItem(i, 3, protocolItem)
              self.package_info.setItem(i, 4, lenItem)
-            
+             
              show=str(info['spa'])+" --> "+str(info['tpa'])+ \
                   ' protocol_type:' +str(info['pro_type']) + \
                   ' op_code : ' +str(info['op'])
@@ -95,7 +98,8 @@ class sniffer(QDialog, Ui_snifferUI):
 
              saveItem = QTableWidgetItem( json.dumps(package) )
              self.package_info.setItem(i, 6, saveItem)
-             
+             dataItem = QTableWidgetItem( data )
+             self.package_info.setItem(i, 7, dataItem)
         elif eth.data.__class__.__name__=="IP6":
              
     
@@ -124,7 +128,7 @@ class sniffer(QDialog, Ui_snifferUI):
                    info['type']=icmp.type       #类型
                    info['code']=icmp.code       #代码
                    info['checksum']=icmp.sum    #校验和
-                   info['data']=repr(icmp.data)
+                   data=icmp.data
                    package['info']=info
        
              elif ip6.nxt == 6:
@@ -138,7 +142,7 @@ class sniffer(QDialog, Ui_snifferUI):
                     info['flags']=tcp.flags    #标志位
                     info['window']=tcp.win     #窗口大小
                     info['checksum']=tcp.sum   #校验和
-                    info['data']=repr(tcp.data)#数据 
+                    data=tcp.data#数据 
                     info['packet_type'] = []   #具体
                     if  tcp.flags & dpkt.tcp.TH_SYN :
                         info['packet_type'].append("SYN")  #SYN
@@ -162,7 +166,7 @@ class sniffer(QDialog, Ui_snifferUI):
                    info['dport']=udp.dport         #目的端口
                    info['ulen']=udp.ulen           #长度
                    info['checksum']=udp.sum        #校验和
-                   info['data'] = repr(udp.data)
+                   data= udp.data
                    package['info']=info  
                    print package   
              #elif isinstance(ip6.data, dpkt.igmp.IGMP):
@@ -173,6 +177,7 @@ class sniffer(QDialog, Ui_snifferUI):
                    info['maxresp']=igmp.maxresp     #最大响应延迟
                    info['checksum'] =igmp.sum       #校验和
                    info['group']=igmp.group         #组地址
+                   data = igmp.data
                    package['info']=info
           
              if package:   
@@ -197,6 +202,7 @@ class sniffer(QDialog, Ui_snifferUI):
                        infoItem = QTableWidgetItem(show)
                        self.package_info.setItem(i, 5, infoItem)
 
+
                   elif (package['protocol'])=='TCP':
                        info=package['info']
                        show=str(info['sport'])+' -> '+str(info['dport']) + '  ['+','.join(info['packet_type'])+']  seq :'+str(info['seq'])+'   ack : ' + str(info['ack'])+\
@@ -211,7 +217,8 @@ class sniffer(QDialog, Ui_snifferUI):
                           '  sum : '+str(info['checksum'])
                        infoItem = QTableWidgetItem(show)
                        self.package_info.setItem(i, 5, infoItem)
-
+                  dataItem = QTableWidgetItem( str(data) )
+                  self.package_info.setItem(i, 7, dataItem)
                   saveItem = QTableWidgetItem(json.dumps(package))
                   self.package_info.setItem(i, 6, saveItem)
 
@@ -226,8 +233,8 @@ class sniffer(QDialog, Ui_snifferUI):
              package['ip_tos'] = ip.tos                        #服务类型   
              package['ip_len'] =  ip.len                       #总长度
              package['ip_id'] = ip.id                          #标识
-             package['ip_DF']=ip.df                            #DF标识位
-             package['ip_MF']=ip.rf                            #MF标识位
+             package['ip_DF']=bool(ip.off & dpkt.ip.IP_DF)     #DF标识位
+             package['ip_MF']=bool(ip.off & dpkt.ip.IP_MF)     #MF标识位
              package['ip_offset']=ip.off & dpkt.ip.IP_OFFMASK  #分段偏移量
              package['ip_ttl'] =  ip.ttl                       #生存期
              package['ip_protocol'] = ip.p                     #协议类型
@@ -243,7 +250,7 @@ class sniffer(QDialog, Ui_snifferUI):
              info['type']=icmp.type       #类型
              info['code']=icmp.code       #代码
              info['checksum']=icmp.sum    #校验和
-             info['data']=repr(icmp.data)
+             data=icmp.data
              package['info']=info
   
            elif isinstance(ip.data, dpkt.tcp.TCP):
@@ -257,7 +264,7 @@ class sniffer(QDialog, Ui_snifferUI):
              info['flags']=tcp.flags    #标记
              info['window']=tcp.win     #窗口大小
              info['checksum']=tcp.sum   #校验和
-             info['data']=repr(tcp.data)#数据
+             data= tcp.data#数据
              info['packet_type'] = []   #具体
              if  tcp.flags & dpkt.tcp.TH_SYN :
                     info['packet_type'].append("SYN")
@@ -281,7 +288,7 @@ class sniffer(QDialog, Ui_snifferUI):
                  info['dport']=udp.dport  #目的端口
                  info['ulen']=udp.ulen    #长度
                  info['checksum']=udp.sum #校验和 
-                 info['data']=repr(udp.data)
+                 data=udp.data
                  package['info']=info
            elif isinstance(ip.data, dpkt.igmp.IGMP):
                  igmp = ip.data
@@ -290,6 +297,7 @@ class sniffer(QDialog, Ui_snifferUI):
                  info['maxresp']=igmp.maxresp #最大响应延迟
                  info['checksum'] =igmp.sum   #校验和
                  info['group']=igmp.group     #组地址
+                 data = igmp.data
                  package['info']=info
          
            else:
@@ -336,6 +344,9 @@ class sniffer(QDialog, Ui_snifferUI):
       
                saveItem = QTableWidgetItem(json.dumps(package))
                self.package_info.setItem(i, 6, saveItem)
+               dataItem = QTableWidgetItem( str(data)  )
+               self.package_info.setItem(i, 7, dataItem)
+
         
     def package_reader(self):
         while(self.get_btnStop()==False):
@@ -399,6 +410,8 @@ class sniffer(QDialog, Ui_snifferUI):
       if self.package_info.item(row, 6) != None:
         package = json.loads(self.package_info.item(row, 6).text())
         protocol = package['protocol']
+        data = self.package_info.item(row, 7).text()
+
         if protocol != 'ARP': 
              ip_ver = package['ip_ver']
         if protocol == 'ARP' :
@@ -412,6 +425,7 @@ class sniffer(QDialog, Ui_snifferUI):
              self.textBrowser.append("<pre> 操作码："+str(info['op']) +"</pre>")
              self.textBrowser.append("<pre> 发送方MAC地址 "+info['sha'] +"  发送方IP地址 "+info['spa'] +"</pre>")
              self.textBrowser.append("<pre> 接收方MAC地址 "+info['tha'] +"  接收方IP地址 "+info['tpa'] +"</pre>")
+             self.textBrowser.append("<pre> 数据:"+ data+"</pre>"  )
              self.textBrowser.append("<pre> 抓包时间:"+ package['timestamp']+"</pre>"  )
         elif protocol =='UDP' :
              ip_ver = package['ip_ver']
@@ -431,7 +445,9 @@ class sniffer(QDialog, Ui_snifferUI):
                    self.textBrowser.append("<h3> UDP首部：</h3>")
                    self.textBrowser.append("<pre> 源端口: "+str(info['sport']) +"  目的端口："+str(info['dport'])+\
                                             " 包长度："+str(info['ulen']) + " 校验和："+str(info['checksum'])+"</pre>")  
-                   #self.textBrowser.append("<pre> 报文数据："+str(info['data']) + "</pre>") 
+                   #
+                    
+                   self.textBrowser.append("<pre> 数据："+data + "</pre>") 
                    self.textBrowser.append("<pre> 抓包时间："+package['timestamp']+"</pre>")
              elif ip_ver == 6 :
                    info=package['info']
@@ -445,9 +461,14 @@ class sniffer(QDialog, Ui_snifferUI):
                    self.textBrowser.append("<h3> UDP首部：</h3>")
                    self.textBrowser.append("<pre> 源端口: "+str(info['sport']) +"  目的端口："+str(info['dport'])+\
                                             " 包长度："+str(info['ulen']) + " 校验和："+str(info['checksum'])+"</pre>")  
-                   #self.textBrowser.append("<pre> 报文数据："+str(info['data']) + "</pre>") 
+                   # 
+
+
+                   self.textBrowser.append("<pre> 数据："+data + "</pre>") 
                    self.textBrowser.append("<pre> 抓包时间："+package['timestamp']+"</pre>")
         
+
+
         elif protocol=='TCP' :
                    buf = package['buf']
                    self.textBrowser_2.append("<pre>"+ buf+"</pre>")
@@ -467,7 +488,7 @@ class sniffer(QDialog, Ui_snifferUI):
                        self.textBrowser.append("<pre> 标记: "+str(info['flags']) +"  窗口大小："+str(info['window'])+\
                                             " 标记类型："+','.join(info['packet_type']) + " 校验和："+str(info['checksum'])+"</pre>")  
 
-
+                       self.textBrowser.append("<pre> 数据："+data + "</pre>") 
                    elif ip_ver == 6 :
                       
                        self.textBrowser.append("<h3> IP首部:       IP version 6 "+"</h3>")             
@@ -483,7 +504,7 @@ class sniffer(QDialog, Ui_snifferUI):
                        self.textBrowser.append("<pre> 标记: "+str(info['flags']) +"  窗口大小："+str(info['window'])+\
                                             " 标记类型："+','.join(info['packet_type']) + " 校验和："+str(info['checksum'])+"</pre>")  
 
-
+                       self.textBrowser.append("<pre> 数据："+data+ "</pre>") 
 
 
                  
@@ -502,7 +523,7 @@ class sniffer(QDialog, Ui_snifferUI):
                    
                    self.textBrowser.append("<h3>"+"ICMP协议:" +"</pre>") 
                    self.textBrowser.append("<pre>"+" 类型: "+str(info['type'])+" 代码："+str(info['code'])+" 校验和： "+str(info['checksum'])+ "</pre>") 
-                                                          
+                   self.textBrowser.append("<pre> 数据："+data + "</pre>")                                                           
         elif protocol =='IGMP' :
                    buf = package['buf']
                    self.textBrowser_2.append("<pre>"+ buf+"</pre>")
@@ -516,7 +537,7 @@ class sniffer(QDialog, Ui_snifferUI):
                        self.textBrowser.append("<pre> 源地址: "+str(package['src_ip'])+" 目的地址: "+str(package['dst_ip'])+"</pre>")
                        self.textBrowser.append("<h3>"+"IGMP协议:" +"</pre>") 
                        self.textBrowser.append("<pre>"+" 类型: "+str(info['type'])+" 最大响应延迟："+str(info['maxresp'])+" 校验和： "+str(info['checksum'])+" 组地址:"+str(info['group'])+ "</pre>") 
-                                                
+                       self.textBrowser.append("<pre> 数据："+data + "</pre>")                                                  
                    elif ip_ver == 6 :
                        self.textBrowser.append("<h3> IP首部:       IP version 6 "+"</h3>")             
                        self.textBrowser.append("<pre> 优先级:"+str(info['fc'])+" 流量标识: "+ str(info['flow'])+" 有效载荷长度:"+ str(info['payload_len'])+\
@@ -525,7 +546,7 @@ class sniffer(QDialog, Ui_snifferUI):
                        self.textBrowser.append("<pre> 目的地址："+str(info['dst'])+ "</pre>")                       
                        self.textBrowser.append("<h3>"+"IGMP协议:" +"</pre>") 
                        self.textBrowser.append("<pre>"+" 类型: "+str(info['type'])+" 最大响应延迟："+str(info['maxresp'])+" 校验和： "+str(info['checksum'])+" 组地址:"+str(info['group'])+ "</pre>") 
-                                                
+                       self.textBrowser.append("<pre> 数据："+data + "</pre>")                                                 
 
         else:
              print "error" 
