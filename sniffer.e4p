@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project sniffer -->
-<!-- Saved: 2016-11-20, 21:52:46 -->
+<!-- Saved: 2016-11-22, 00:23:34 -->
 <!-- Copyright (C) 2016 ,  -->
 <Project version="5.1">
   <Language></Language>
@@ -17,6 +17,7 @@
     <Source>__init__.py</Source>
     <Source>sniffer.py</Source>
     <Source>temp.py</Source>
+    <Source>temptable.py</Source>
     <Source>util.py</Source>
   </Sources>
   <Forms>

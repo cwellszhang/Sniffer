@@ -1,16 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-6.0.dtd">
 <!-- eric6 tasks file for project sniffer -->
-<!-- Saved: 2016-11-21, 18:05:44 -->
+<!-- Saved: 2016-11-22, 16:34:33 -->
 <Tasks version="6.0">
   <ProjectScanFilter></ProjectScanFilter>
-  <Task priority="1" completed="False" type="1" uid="{8699179b-e4bd-49c5-a9f5-1e1841aa5bfd}">
+  <Task priority="1" completed="False" type="1" uid="{1414efa5-e145-4243-a10a-f8355e247719}">
     <Summary>TODO: not implemented yet</Summary>
     <Description></Description>
-    <Created>2016-11-21, 18:05:41</Created>
+    <Created>2016-11-22, 13:53:01</Created>
     <Resource>
-      <Filename>temp.py</Filename>
-      <Linenumber>35</Linenumber>
+      <Filename>temptable.py</Filename>
+      <Linenumber>37</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" type="1" uid="{a006313f-919b-445d-af44-dee47c288f79}">
+    <Summary>TODO: not implemented yet</Summary>
+    <Description></Description>
+    <Created>2016-11-22, 13:53:01</Created>
+    <Resource>
+      <Filename>temptable.py</Filename>
+      <Linenumber>50</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" type="1" uid="{2d6df3b8-3d35-478d-84a4-cddda340d698}">
+    <Summary>TODO: not implemented yet</Summary>
+    <Description></Description>
+    <Created>2016-11-22, 13:53:01</Created>
+    <Resource>
+      <Filename>temptable.py</Filename>
+      <Linenumber>63</Linenumber>
     </Resource>
   </Task>
 </Tasks>
