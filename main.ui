@@ -130,19 +130,6 @@
     <string>退出</string>
    </property>
   </widget>
-  <widget class="QTextBrowser" name="textBrowser">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>500</y>
-     <width>601</width>
-     <height>301</height>
-    </rect>
-   </property>
-   <property name="focusPolicy">
-    <enum>Qt::ClickFocus</enum>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
@@ -225,7 +212,7 @@
     <enum>Qt::DashLine</enum>
    </property>
    <property name="sortingEnabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="wordWrap">
     <bool>false</bool>
@@ -246,7 +233,7 @@
     <number>100</number>
    </attribute>
    <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
    <attribute name="verticalHeaderVisible">
     <bool>true</bool>
@@ -318,6 +305,26 @@
      <y>500</y>
      <width>411</width>
      <height>301</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="textEdit">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>500</y>
+     <width>601</width>
+     <height>201</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="textEdit_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>698</y>
+     <width>601</width>
+     <height>101</height>
     </rect>
    </property>
   </widget>

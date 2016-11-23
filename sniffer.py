@@ -38,7 +38,7 @@ class sniffer(QDialog, Ui_snifferUI):
         self.package_info.setColumnWidth(1,150)
         self.package_info.setColumnHidden(6,True)
         self.package_info.setColumnHidden(7,True)
-
+       
     def get_btnStop(self):
          return self.btn_stop
     def set_btnStop(self, stop):
@@ -81,7 +81,8 @@ class sniffer(QDialog, Ui_snifferUI):
              dstItem = QTableWidgetItem("  "+info['tha'])
              protocolItem = QTableWidgetItem(" "+package['protocol'])
              lenItem = QTableWidgetItem("  "+str(package['len']))
-             i  = self.package_info.currentRow()+1
+             #i  = self.package_info.currentRow()+1
+             i = self.package_info.rowCount()
              self.package_info.insertRow(i)
 
              self.package_info.setItem(i, 0, timeItem)
@@ -100,6 +101,7 @@ class sniffer(QDialog, Ui_snifferUI):
              self.package_info.setItem(i, 6, saveItem)
              dataItem = QTableWidgetItem( data )
              self.package_info.setItem(i, 7, dataItem)
+             return "ARP"
         elif eth.data.__class__.__name__=="IP6":
              
     
@@ -181,7 +183,8 @@ class sniffer(QDialog, Ui_snifferUI):
                    package['info']=info
           
              if package:   
-                  i  = self.package_info.currentRow()+1
+                  #i  = self.package_info.currentRow()+1
+                  i = self.package_info.rowCount()
                   self.package_info.insertRow(i)
                   timeItem = QTableWidgetItem("  "+package['timestamp'])
            
@@ -217,7 +220,8 @@ class sniffer(QDialog, Ui_snifferUI):
                           '  sum : '+str(info['checksum'])
                        infoItem = QTableWidgetItem(show)
                        self.package_info.setItem(i, 5, infoItem)
-                  dataItem = QTableWidgetItem( str(data) )
+                  print data
+                  dataItem = QTableWidgetItem(data)
                   self.package_info.setItem(i, 7, dataItem)
                   saveItem = QTableWidgetItem(json.dumps(package))
                   self.package_info.setItem(i, 6, saveItem)
@@ -304,7 +308,8 @@ class sniffer(QDialog, Ui_snifferUI):
                  package['protocol']=eth.data.__class__.__name__
              
            if package:
-               i  = self.package_info.currentRow()+1
+               #i  = self.package_info.currentRow()+1
+               i = self.package_info.rowCount()
                self.package_info.insertRow(i)
                timeItem = QTableWidgetItem("  "+package['timestamp'])
 
@@ -320,14 +325,14 @@ class sniffer(QDialog, Ui_snifferUI):
                self.package_info.setItem(i, 4, lenItem)
                #self.package_info.
                if (package['protocol'])=='UDP':
-                 info=package['info']
-                 show=str(info['sport'])+' -> '+str(info['dport'])+'  len :'+str(info['ulen'])+'   sum : ' + str(info['checksum'])
-                 infoItem = QTableWidgetItem(show)
-                 self.package_info.setItem(i, 5, infoItem)
-    
+                     info=package['info']
+                     show =str(info['sport'])+ " ->" + str(info['dport']) + ' id:'+str(package['ip_id'])+' MF:'+str(package['ip_MF']) 
+                     infoItem = QTableWidgetItem(show)
+                     self.package_info.setItem(i, 5, infoItem)
+        
                elif (package['protocol'])=='TCP':
                  info=package['info']
-                 show=str(info['sport'])+' -> '+str(info['dport']) + '  ['+','.join(info['packet_type'])+']  seq :'+str(info['seq'])+'   ack : ' + str(info['ack'])+\
+                 show=str(info['sport'])+' -> '+str(info['dport']) + '  ['+','.join(info['packet_type'])+']  id :'+str(package['ip_id'])+' MF:'+str(package['ip_MF'])+\
                       ' window : '+ str(info['window'])
                  infoItem = QTableWidgetItem(show)
                  self.package_info.setItem(i, 5, infoItem)
@@ -337,6 +342,7 @@ class sniffer(QDialog, Ui_snifferUI):
                  show='type : '+str(info['type'])+ \
                       '  code : '+str(info['code']) + \
                       '  sum : '+str(info['checksum'])+ \
+                       ' offset: '+str(ip.offset)+ \
                       '    ttl :'+str(package['ip_ttl'])
                  infoItem = QTableWidgetItem(show)
                  self.package_info.setItem(i, 5, infoItem)
@@ -350,7 +356,9 @@ class sniffer(QDialog, Ui_snifferUI):
         
     def package_reader(self):
         while(self.get_btnStop()==False):
-           pcap(self.choose_eth.currentText(), immediate=True).loop(3,self.deal_package)
+           get = pcap(self.choose_eth.currentText(), immediate=True).loop(1,self.deal_package)
+           if get :
+            print "callback finised!"+ get
        
     @pyqtSlot() 
     def on_btn_begin_clicked(self):
@@ -405,12 +413,13 @@ class sniffer(QDialog, Ui_snifferUI):
 
     @pyqtSlot(int, int)
     def on_package_info_cellClicked(self, row, column):
-      self.textBrowser.clear()
+      self.textEdit.clear()
       self.textBrowser_2.clear()
       if self.package_info.item(row, 6) != None:
         package = json.loads(self.package_info.item(row, 6).text())
         protocol = package['protocol']
         data = self.package_info.item(row, 7).text()
+        print data
 
         if protocol != 'ARP': 
              ip_ver = package['ip_ver']
@@ -418,15 +427,12 @@ class sniffer(QDialog, Ui_snifferUI):
              info=package['info']
              buf = package['buf']
              self.textBrowser_2.append("<pre>"+ buf+"</pre>")
-             self.textBrowser.append("<h3>   协议：ARP "+"</h3>")
-             self.textBrowser.append("<pre> 硬件类型: "+ str(info['hrd_type'])+ "  协议类型:"+ str(info['pro_type'])+"</pre>" )
-             self.textBrowser.append("<pre> MAC地址长度："+str(info['mac_addr_len'])+"</pre>")
-             self.textBrowser.append("<pre> 协议地址长度："+str(info['pro_addr_len']) +"</pre>")
-             self.textBrowser.append("<pre> 操作码："+str(info['op']) +"</pre>")
-             self.textBrowser.append("<pre> 发送方MAC地址 "+info['sha'] +"  发送方IP地址 "+info['spa'] +"</pre>")
-             self.textBrowser.append("<pre> 接收方MAC地址 "+info['tha'] +"  接收方IP地址 "+info['tpa'] +"</pre>")
-             self.textBrowser.append("<pre> 数据:"+ data+"</pre>"  )
-             self.textBrowser.append("<pre> 抓包时间:"+ package['timestamp']+"</pre>"  )
+             self.textEdit.append("<h3>   协议：ARP" +"</h3>")
+             self.textEdit.append("<pre> 硬件类型: "+ str(info['hrd_type'])+ "  协议类型:"+ str(info['pro_type'])+\
+                   " MAC地址长度："+str(info['mac_addr_len'])+" 协议地址长度："+str(info['pro_addr_len'])+" 操作码："+str(info['op'])+"</pre>" )
+             self.textEdit.append("<pre> 发送方MAC地址 "+info['sha'] +"  发送方IP地址 "+info['spa'] +"</pre>")
+             self.textEdit.append("<pre> 接收方MAC地址 "+info['tha'] +"  接收方IP地址 "+info['tpa'] +"</pre>")
+             self.textEdit_2.setPlainText(bytes(data))
         elif protocol =='UDP' :
              ip_ver = package['ip_ver']
              buf = package['buf']
@@ -434,38 +440,38 @@ class sniffer(QDialog, Ui_snifferUI):
              if ip_ver == 4 :
                    info=package['info']
                    # ipv4头部信息
-                   self.textBrowser.append("<h3> IP首部:       IP version 4 "+"</h3>")
-                   self.textBrowser.append("<pre> 头长度:" + str(package['ip_hl'])  + \
+                   self.textEdit.append("<h3> IP首部:       IP version 4 "+"</h3>")
+                   self.textEdit.append("<pre> 头长度:" + str(package['ip_hl'])  + \
                                            " 服务类型："+str(package['ip_tos'])+" 总长度："+ str(package['ip_len'])+" 标识："+str(package['ip_id'])+ \
                                            " DF标志位:"+str(package['ip_DF'])+" MF标志位:"+str(package['ip_MF'])+" 分段偏移量:"+str(package['ip_offset'])+"</pre>" )
-                   self.textBrowser.append("<pre> 生存期:"+ str(package['ip_ttl'])+" 协议类型:" + str(package['ip_protocol'])+" 头部校验和:"+str(package['ip_sum'])+"</pre>" )
-                   self.textBrowser.append("<pre> 源地址: "+str(package['src_ip'])+" 目的地址: "+str(package['dst_ip'])+"</pre>")
+                   self.textEdit.append("<pre> 生存期:"+ str(package['ip_ttl'])+" 协议类型:" + str(package['ip_protocol'])+" 头部校验和:"+str(package['ip_sum'])+"</pre>" )
+                   self.textEdit.append("<pre> 源地址: "+str(package['src_ip'])+" 目的地址: "+str(package['dst_ip'])+"</pre>")
                                                      
                    # UDP头部信息
-                   self.textBrowser.append("<h3> UDP首部：</h3>")
-                   self.textBrowser.append("<pre> 源端口: "+str(info['sport']) +"  目的端口："+str(info['dport'])+\
+                   self.textEdit.append("<h3> UDP首部：</h3>")
+                   self.textEdit.append("<pre> 源端口: "+str(info['sport']) +"  目的端口："+str(info['dport'])+\
                                             " 包长度："+str(info['ulen']) + " 校验和："+str(info['checksum'])+"</pre>")  
                    #
                     
-                   self.textBrowser.append("<pre> 数据："+data + "</pre>") 
-                   self.textBrowser.append("<pre> 抓包时间："+package['timestamp']+"</pre>")
+                   self.textEdit_2.setPlainText(bytes(data))
+                   self.textEdit.append("<pre> 抓包时间："+package['timestamp']+"</pre>")
              elif ip_ver == 6 :
                    info=package['info']
                    # ipv6头部信息
-                   self.textBrowser.append("<h3> IP首部:       IP version 6 "+"</h3>")             
-                   self.textBrowser.append("<pre> 优先级:"+str(info['fc'])+" 流量标识: "+ str(info['flow'])+" 有效载荷长度:"+ str(info['payload_len'])+\
+                   self.textEdit.append("<h3> IP首部:       IP version 6 "+"</h3>")             
+                   self.textEdit.append("<pre> 优先级:"+str(info['fc'])+" 流量标识: "+ str(info['flow'])+" 有效载荷长度:"+ str(info['payload_len'])+\
                                              " 下一包头："+str(info['next_hdr'])+" 跳数限制："+str(info['hop_lim'])+"</pre>" )
-                   self.textBrowser.append("<pre> 起始地址："+str(info['src']) +"</pre>")
-                   self.textBrowser.append("<pre> 目的地址："+str(info['dst'])+ "</pre>")
+                   self.textEdit.append("<pre> 起始地址："+str(info['src']) +"</pre>")
+                   self.textEdit.append("<pre> 目的地址："+str(info['dst'])+ "</pre>")
                    # UDP头部信息      
-                   self.textBrowser.append("<h3> UDP首部：</h3>")
-                   self.textBrowser.append("<pre> 源端口: "+str(info['sport']) +"  目的端口："+str(info['dport'])+\
+                   self.textEdit.append("<h3> UDP首部：</h3>")
+                   self.textEdit.append("<pre> 源端口: "+str(info['sport']) +"  目的端口："+str(info['dport'])+\
                                             " 包长度："+str(info['ulen']) + " 校验和："+str(info['checksum'])+"</pre>")  
                    # 
 
 
-                   self.textBrowser.append("<pre> 数据："+data + "</pre>") 
-                   self.textBrowser.append("<pre> 抓包时间："+package['timestamp']+"</pre>")
+                   self.textEdit_2.setPlainText(bytes(data))
+                   self.textEdit.append("<pre> 抓包时间："+package['timestamp']+"</pre>")
         
 
 
@@ -474,37 +480,37 @@ class sniffer(QDialog, Ui_snifferUI):
                    self.textBrowser_2.append("<pre>"+ buf+"</pre>")
                    info=package['info']
                    if ip_ver ==4:
-                       self.textBrowser.append("<h3> IP首部:       IP version 4 "+"</h3>")
-                       self.textBrowser.append("<pre> 头长度:" + str(package['ip_hl'])  + \
+                       self.textEdit.append("<h3> IP首部:       IP version 4 "+"</h3>")
+                       self.textEdit.append("<pre> 头长度:" + str(package['ip_hl'])  + \
                                            " 服务类型："+str(package['ip_tos'])+" 总长度："+ str(package['ip_len'])+" 标识："+str(package['ip_id'])+ \
                                            " DF标志位:"+str(package['ip_DF'])+" MF标志位:"+str(package['ip_MF'])+" 分段偏移量:"+str(package['ip_offset'])+"</pre>" )
-                       self.textBrowser.append("<pre> 生存期:"+ str(package['ip_ttl'])+" 协议类型:" + str(package['ip_protocol'])+" 头部校验和:"+str(package['ip_sum'])+"</pre>" )
-                       self.textBrowser.append("<pre> 源地址: "+str(package['src_ip'])+" 目的地址: "+str(package['dst_ip'])+"</pre>")
+                       self.textEdit.append("<pre> 生存期:"+ str(package['ip_ttl'])+" 协议类型:" + str(package['ip_protocol'])+" 头部校验和:"+str(package['ip_sum'])+"</pre>" )
+                       self.textEdit.append("<pre> 源地址: "+str(package['src_ip'])+" 目的地址: "+str(package['dst_ip'])+"</pre>")
 
-                       self.textBrowser.append("<h3> TCP协议:"+"</h3>")
-                       self.textBrowser.append("<pre> 源端口: "+str(info['sport']) +"  目的端口："+str(info['dport'])+\
+                       self.textEdit.append("<h3> TCP协议:"+"</h3>")
+                       self.textEdit.append("<pre> 源端口: "+str(info['sport']) +"  目的端口："+str(info['dport'])+\
                                             " seq："+str(info['seq']) + " ack："+str(info['ack'])+"</pre>")  
 
-                       self.textBrowser.append("<pre> 标记: "+str(info['flags']) +"  窗口大小："+str(info['window'])+\
+                       self.textEdit.append("<pre> 标记: "+str(info['flags']) +"  窗口大小："+str(info['window'])+\
                                             " 标记类型："+','.join(info['packet_type']) + " 校验和："+str(info['checksum'])+"</pre>")  
 
-                       self.textBrowser.append("<pre> 数据："+data + "</pre>") 
+                       self.textEdit_2.setPlainText(bytes(data))
                    elif ip_ver == 6 :
                       
-                       self.textBrowser.append("<h3> IP首部:       IP version 6 "+"</h3>")             
-                       self.textBrowser.append("<pre> 优先级:"+str(info['fc'])+" 流量标识: "+ str(info['flow'])+" 有效载荷长度:"+ str(info['payload_len'])+\
+                       self.textEdit.append("<h3> IP首部:       IP version 6 "+"</h3>")             
+                       self.textEdit.append("<pre> 优先级:"+str(info['fc'])+" 流量标识: "+ str(info['flow'])+" 有效载荷长度:"+ str(info['payload_len'])+\
                                                  " 下一包头："+str(info['next_hdr'])+" 跳数限制："+str(info['hop_lim'])+"</pre>" )
-                       self.textBrowser.append("<pre> 起始地址："+str(info['src']) +"</pre>")
-                       self.textBrowser.append("<pre> 目的地址："+str(info['dst'])+ "</pre>")
+                       self.textEdit.append("<pre> 起始地址："+str(info['src']) +"</pre>")
+                       self.textEdit.append("<pre> 目的地址："+str(info['dst'])+ "</pre>")
  
-                       self.textBrowser.append("<h3> TCP协议:"+"</h3>")
-                       self.textBrowser.append("<pre> 源端口: "+str(info['sport']) +"  目的端口："+str(info['dport'])+\
+                       self.textEdit.append("<h3> TCP协议:"+"</h3>")
+                       self.textEdit.append("<pre> 源端口: "+str(info['sport']) +"  目的端口："+str(info['dport'])+\
                                             " seq："+str(info['seq']) + " ack："+str(info['ack'])+"</pre>")  
 
-                       self.textBrowser.append("<pre> 标记: "+str(info['flags']) +"  窗口大小："+str(info['window'])+\
+                       self.textEdit.append("<pre> 标记: "+str(info['flags']) +"  窗口大小："+str(info['window'])+\
                                             " 标记类型："+','.join(info['packet_type']) + " 校验和："+str(info['checksum'])+"</pre>")  
 
-                       self.textBrowser.append("<pre> 数据："+data+ "</pre>") 
+                       self.textEdit_2.setPlainText(bytes(data))
 
 
                  
@@ -514,39 +520,52 @@ class sniffer(QDialog, Ui_snifferUI):
                ip_ver = package['ip_ver'] 
                info=package['info']
                if ip_ver == 4:
-                   self.textBrowser.append("<h3> IP首部:       IP version 4 "+"</h3>")
-                   self.textBrowser.append("<pre> 头长度:" + str(package['ip_hl'])  + \
+                   self.textEdit.append("<h3> IP首部:       IP version 4 "+"</h3>")
+                   self.textEdit.append("<pre> 头长度:" + str(package['ip_hl'])  + \
                                            " 服务类型："+str(package['ip_tos'])+" 总长度："+ str(package['ip_len'])+" 标识："+str(package['ip_id'])+ \
                                            " DF标志位:"+str(package['ip_DF'])+" MF标志位:"+str(package['ip_MF'])+" 分段偏移量:"+str(package['ip_offset'])+"</pre>" )
-                   self.textBrowser.append("<pre> 生存期:"+ str(package['ip_ttl'])+" 协议类型:" + str(package['ip_protocol'])+" 头部校验和:"+str(package['ip_sum'])+"</pre>" )
-                   self.textBrowser.append("<pre> 源地址: "+str(package['src_ip'])+" 目的地址: "+str(package['dst_ip'])+"</pre>")
+                   self.textEdit.append("<pre> 生存期:"+ str(package['ip_ttl'])+" 协议类型:" + str(package['ip_protocol'])+" 头部校验和:"+str(package['ip_sum'])+"</pre>" )
+                   self.textEdit.append("<pre> 源地址: "+str(package['src_ip'])+" 目的地址: "+str(package['dst_ip'])+"</pre>")
                    
-                   self.textBrowser.append("<h3>"+"ICMP协议:" +"</pre>") 
-                   self.textBrowser.append("<pre>"+" 类型: "+str(info['type'])+" 代码："+str(info['code'])+" 校验和： "+str(info['checksum'])+ "</pre>") 
-                   self.textBrowser.append("<pre> 数据："+data + "</pre>")                                                           
+                   self.textEdit.append("<h3>"+"ICMP协议:" +"</pre>") 
+                   self.textEdit.append("<pre>"+" 类型: "+str(info['type'])+" 代码："+str(info['code'])+" 校验和： "+str(info['checksum'])+ "</pre>") 
+                   self.textEdit_2.setPlainText(bytes(data))
+               elif ip_ver == 6 :
+                       self.textEdit.append("<h3> IP首部:       IP version 6 "+"</h3>")             
+                       self.textEdit.append("<pre> 优先级:"+str(info['fc'])+" 流量标识: "+ str(info['flow'])+" 有效载荷长度:"+ str(info['payload_len'])+\
+                                                 " 下一包头："+str(info['next_hdr'])+" 跳数限制："+str(info['hop_lim'])+"</pre>" )
+                       self.textEdit.append("<pre> 起始地址："+str(info['src']) +"</pre>")
+                       self.textEdit.append("<pre> 目的地址："+str(info['dst'])+ "</pre>")
+ 
+                       self.textEdit.append("<h3> ICMP协议:"+"</h3>")
+                       self.textEdit.append("<pre>"+" 类型: "+str(info['type'])+" 代码："+str(info['code'])+" 校验和： "+str(info['checksum'])+ "</pre>") 
+                       self.textEdit_2.setPlainText(bytes(data))
+
+                                                        
+                           
         elif protocol =='IGMP' :
                    buf = package['buf']
                    self.textBrowser_2.append("<pre>"+ buf+"</pre>")
                    info=package['info']
                    if ip_ver ==4:
-                       self.textBrowser.append("<h3> IP首部:       IP version 4 "+"</h3>")
-                       self.textBrowser.append("<pre> 头长度:" + str(package['ip_hl'])  + \
+                       self.textEdit.append("<h3> IP首部:       IP version 4 "+"</h3>")
+                       self.textEdit.append("<pre> 头长度:" + str(package['ip_hl'])  + \
                                            " 服务类型："+str(package['ip_tos'])+" 总长度："+ str(package['ip_len'])+" 标识："+str(package['ip_id'])+ \
                                            " DF标志位:"+str(package['ip_DF'])+" MF标志位:"+str(package['ip_MF'])+" 分段偏移量:"+str(package['ip_offset'])+"</pre>" )
-                       self.textBrowser.append("<pre> 生存期:"+ str(package['ip_ttl'])+" 协议类型:" + str(package['ip_protocol'])+" 头部校验和:"+str(package['ip_sum'])+"</pre>" )
-                       self.textBrowser.append("<pre> 源地址: "+str(package['src_ip'])+" 目的地址: "+str(package['dst_ip'])+"</pre>")
-                       self.textBrowser.append("<h3>"+"IGMP协议:" +"</pre>") 
-                       self.textBrowser.append("<pre>"+" 类型: "+str(info['type'])+" 最大响应延迟："+str(info['maxresp'])+" 校验和： "+str(info['checksum'])+" 组地址:"+str(info['group'])+ "</pre>") 
-                       self.textBrowser.append("<pre> 数据："+data + "</pre>")                                                  
+                       self.textEdit.append("<pre> 生存期:"+ str(package['ip_ttl'])+" 协议类型:" + str(package['ip_protocol'])+" 头部校验和:"+str(package['ip_sum'])+"</pre>" )
+                       self.textEdit.append("<pre> 源地址: "+str(package['src_ip'])+" 目的地址: "+str(package['dst_ip'])+"</pre>")
+                       self.textEdit.append("<h3>"+"IGMP协议:" +"</pre>") 
+                       self.textEdit.append("<pre>"+" 类型: "+str(info['type'])+" 最大响应延迟："+str(info['maxresp'])+" 校验和： "+str(info['checksum'])+" 组地址:"+str(info['group'])+ "</pre>") 
+                       self.textEdit_2.setPlainText(bytes(data))
                    elif ip_ver == 6 :
-                       self.textBrowser.append("<h3> IP首部:       IP version 6 "+"</h3>")             
-                       self.textBrowser.append("<pre> 优先级:"+str(info['fc'])+" 流量标识: "+ str(info['flow'])+" 有效载荷长度:"+ str(info['payload_len'])+\
+                       self.textEdit.append("<h3> IP首部:       IP version 6 "+"</h3>")             
+                       self.textEdit.append("<pre> 优先级:"+str(info['fc'])+" 流量标识: "+ str(info['flow'])+" 有效载荷长度:"+ str(info['payload_len'])+\
                                                  " 下一包头："+str(info['next_hdr'])+" 跳数限制："+str(info['hop_lim'])+"</pre>" )
-                       self.textBrowser.append("<pre> 起始地址："+str(info['src']) +"</pre>")
-                       self.textBrowser.append("<pre> 目的地址："+str(info['dst'])+ "</pre>")                       
-                       self.textBrowser.append("<h3>"+"IGMP协议:" +"</pre>") 
-                       self.textBrowser.append("<pre>"+" 类型: "+str(info['type'])+" 最大响应延迟："+str(info['maxresp'])+" 校验和： "+str(info['checksum'])+" 组地址:"+str(info['group'])+ "</pre>") 
-                       self.textBrowser.append("<pre> 数据："+data + "</pre>")                                                 
+                       self.textEdit.append("<pre> 起始地址："+str(info['src']) +"</pre>")
+                       self.textEdit.append("<pre> 目的地址："+str(info['dst'])+ "</pre>")                       
+                       self.textEdit.append("<h3>"+"IGMP协议:" +"</pre>") 
+                       self.textEdit.append("<pre>"+" 类型: "+str(info['type'])+" 最大响应延迟："+str(info['maxresp'])+" 校验和： "+str(info['checksum'])+" 组地址:"+str(info['group'])+ "</pre>") 
+                       self.textEdit_2.setPlainText(bytes(data))
 
         else:
              print "error" 
