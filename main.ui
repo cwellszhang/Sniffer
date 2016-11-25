@@ -2,13 +2,22 @@
 <ui version="4.0">
  <class>snifferUI</class>
  <widget class="QDialog" name="snifferUI">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>1047</width>
-    <height>814</height>
+    <height>813</height>
    </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1047</width>
+    <height>814</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Sniffer</string>
@@ -88,7 +97,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>查看日志</string>
+    <string>查看全部</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_recover">
@@ -101,7 +110,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>报文重组</string>
+    <string>文件重组</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_save">
@@ -200,7 +209,7 @@
     <bool>true</bool>
    </property>
    <property name="selectionMode">
-    <enum>QAbstractItemView::ContiguousSelection</enum>
+    <enum>QAbstractItemView::ExtendedSelection</enum>
    </property>
    <property name="selectionBehavior">
     <enum>QAbstractItemView::SelectRows</enum>
@@ -327,6 +336,11 @@
      <height>101</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+    </font>
+   </property>
   </widget>
   <action name="actionMenubar">
    <property name="text">
@@ -335,7 +349,24 @@
   </action>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btn_exit</sender>
+   <signal>clicked()</signal>
+   <receiver>snifferUI</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>40</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>679</x>
+     <y>30</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <slots>
   <slot>combo_box_clicked()</slot>
  </slots>

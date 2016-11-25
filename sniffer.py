@@ -9,13 +9,13 @@ Module implementing sniffer.
 from pcap import *
 import dpkt, datetime
 from util import *
-import time, re, json, codecs
+import time, re, json, codecs,os
 import struct
 import threading, Queue
-import hashlib
 from PyQt5.QtCore import pyqtSlot
 
-from PyQt5.QtWidgets import QDialog, QTableWidget, QTableWidgetItem, QMessageBox, QInputDialog, QLineEdit
+from PyQt5.QtWidgets import QDialog, QTableWidget, QTableWidgetItem, QMessageBox, QInputDialog, QLineEdit,QFileDialog
+
 
 from Ui_main import Ui_snifferUI
 
@@ -93,7 +93,6 @@ class sniffer(QDialog, Ui_snifferUI):
         eth = dpkt.ethernet.Ethernet(buf)
         #print type(eth)
       # Make sure the Ethernet data contains an IP packet
-
         if eth.data.__class__.__name__=="ARP" :
              arp = eth.data
              package['protocol']='ARP'
@@ -352,7 +351,7 @@ class sniffer(QDialog, Ui_snifferUI):
              info['window']=tcp.win     #窗口大小
              info['checksum']=tcp.sum   #校验和
              data= tcp.data#数据
-             info['packet_type'] = []   #具体
+             info['packet_type'] = []   #具体lean  l
              if  tcp.flags & dpkt.tcp.TH_SYN :
                     info['packet_type'].append("SYN")
              if tcp.flags & dpkt.tcp.TH_FIN:
@@ -377,7 +376,7 @@ class sniffer(QDialog, Ui_snifferUI):
                  for slice in list:
                         data = data+slice['ip_data']
                  #组装完成
-                 data= hash.hexdigest(data)
+                 data= data
                  info['data']=data
                  package['info']=info
                  #清理内存数据
@@ -523,6 +522,7 @@ class sniffer(QDialog, Ui_snifferUI):
                    print 'no rule'
                    pcap(self.choose_eth.currentText(), immediate=True).loop(1,self.deal_package)
            except Exception, e:
+                   QMessageBox.information(self,"Error Message",e);
                    print e
                    self.set_filter("-1")
 
@@ -574,19 +574,55 @@ class sniffer(QDialog, Ui_snifferUI):
 
     @pyqtSlot()
     def on_btn_search_clicked(self):
-        pass
+        #todo
+        filter,ok = QInputDialog.getText(self, "搜索时将停止抓包","请输入需要搜索的字段:",QLineEdit.Normal, "password")
+        if ok and filter:
+          self.set_btnStop(True)
+          for row in range(self.package_info.rowCount()):
+              data = bytes((self.package_info.item(row, 7).text()))
+              if data is None :
+                      self.package_info.setRowHidden(row,True)
+              else:
+                    obj= re.search(filter,data)
+
+                    if  obj is None:
+                      self.package_info.setRowHidden(row,True)
+                    else:
+                      print 'data find=' + data
+
 
     @pyqtSlot()
     def on_btn_viewlog_clicked(self):
-        pass
+        current= self.package_info.rowCount()
+        for row in range(current):
+          self.package_info.setRowHidden(row,False)
 
     @pyqtSlot()
     def on_btn_recover_clicked(self):
-        pass
+       pass
 
     @pyqtSlot()
     def on_btn_save_clicked(self):
-        pass
+        fileName, ok = QFileDialog.getSaveFileName(self,"文件保存","./","All Files (*);;Text Files (*.txt)")
+        if fileName is None:
+              QMessageBox.information(self,"Error Message","Plesase Select a Text File");
+        else:
+            if ok :
+              #
+              # data = self.package_info.get
+              # file.write("Test")
+              flg=-1
+              for item in self.package_info.selectedItems():
+                   row=item.row()
+                   if row != flg :
+                     flg=row
+                     if self.package_info.item(row,6):
+                         package = json.loads(self.package_info.item(row,6).text())
+                         data=self.package_info.item(row,7).text()
+                         saveContent = deal_save(package,data)
+                         file = open(fileName, 'a')
+                         file.write(saveContent)
+                         file.close()
 
     @pyqtSlot()
     def on_btn_exit_clicked(self):
@@ -621,7 +657,7 @@ class sniffer(QDialog, Ui_snifferUI):
                    " MAC地址长度："+str(info['mac_addr_len'])+" 协议地址长度："+str(info['pro_addr_len'])+" 操作码："+str(info['op'])+"</pre>" )
              self.textEdit.append("<pre> 发送方MAC地址 "+info['sha'] +"  发送方IP地址 "+info['spa'] +"</pre>")
              self.textEdit.append("<pre> 接收方MAC地址 "+info['tha'] +"  接收方IP地址 "+info['tpa'] +"</pre>")
-             self.textEdit_2.setPlainText(bytes(data))
+             self.textEdit_2.setPlainText(data)
         elif protocol =='UDP' :
              ip_ver = package['ip_ver']
              buf = package['buf']
@@ -642,7 +678,7 @@ class sniffer(QDialog, Ui_snifferUI):
                                             " 包长度："+str(info['ulen']) + " 校验和："+str(info['checksum'])+"</pre>")
                    #
 
-                   self.textEdit_2.setPlainText(bytes(data))
+                   self.textEdit_2.setPlainText(data)
                    self.textEdit.append("<pre> 抓包时间："+package['timestamp']+"</pre>")
              elif ip_ver == 6 :
                    info=package['info']
@@ -659,7 +695,7 @@ class sniffer(QDialog, Ui_snifferUI):
                    #
 
 
-                   self.textEdit_2.setPlainText(bytes(data))
+                   self.textEdit_2.setPlainText(data)
                    self.textEdit.append("<pre> 抓包时间："+package['timestamp']+"</pre>")
 
 
@@ -683,7 +719,7 @@ class sniffer(QDialog, Ui_snifferUI):
                        self.textEdit.append("<pre> 标记: "+str(info['flags']) +"  窗口大小："+str(info['window'])+\
                                             " 标记类型："+','.join(info['packet_type']) + " 校验和："+str(info['checksum'])+"</pre>")
 
-                       self.textEdit_2.setPlainText(bytes(data))
+                       self.textEdit_2.setPlainText(data)
                    elif ip_ver == 6 :
 
                        self.textEdit.append("<h3> IP首部:       IP version 6 "+"</h3>")
@@ -699,7 +735,7 @@ class sniffer(QDialog, Ui_snifferUI):
                        self.textEdit.append("<pre> 标记: "+str(info['flags']) +"  窗口大小："+str(info['window'])+\
                                             " 标记类型："+','.join(info['packet_type']) + " 校验和："+str(info['checksum'])+"</pre>")
 
-                       self.textEdit_2.setPlainText(bytes(data))
+                       self.textEdit_2.setPlainText(data)
 
 
 
@@ -718,7 +754,7 @@ class sniffer(QDialog, Ui_snifferUI):
 
                    self.textEdit.append("<h3>"+"ICMP协议:" +"</pre>")
                    self.textEdit.append("<pre>"+" 类型: "+str(info['type'])+" 代码："+str(info['code'])+" 校验和： "+str(info['checksum'])+ "</pre>")
-                   self.textEdit_2.setPlainText(bytes(data))
+                   self.textEdit_2.setPlainText((data))
                elif ip_ver == 6 :
                        self.textEdit.append("<h3> IP首部:       IP version 6 "+"</h3>")
                        self.textEdit.append("<pre> 优先级:"+str(info['fc'])+" 流量标识: "+ str(info['flow'])+" 有效载荷长度:"+ str(info['payload_len'])+\
@@ -728,7 +764,7 @@ class sniffer(QDialog, Ui_snifferUI):
 
                        self.textEdit.append("<h3> ICMP协议:"+"</h3>")
                        self.textEdit.append("<pre>"+" 类型: "+str(info['type'])+" 代码："+str(info['code'])+" 校验和： "+str(info['checksum'])+ "</pre>")
-                       self.textEdit_2.setPlainText(bytes(data))
+                       self.textEdit_2.setPlainText((data))
 
 
 
@@ -745,7 +781,7 @@ class sniffer(QDialog, Ui_snifferUI):
                        self.textEdit.append("<pre> 源地址: "+str(package['src_ip'])+" 目的地址: "+str(package['dst_ip'])+"</pre>")
                        self.textEdit.append("<h3>"+"IGMP协议:" +"</pre>")
                        self.textEdit.append("<pre>"+" 类型: "+str(info['type'])+" 最大响应延迟："+str(info['maxresp'])+" 校验和： "+str(info['checksum'])+" 组地址:"+str(info['group'])+ "</pre>")
-                       self.textEdit_2.setPlainText(bytes(data))
+                       self.textEdit_2.setPlainText((data))
                    elif ip_ver == 6 :
                        self.textEdit.append("<h3> IP首部:       IP version 6 "+"</h3>")
                        self.textEdit.append("<pre> 优先级:"+str(info['fc'])+" 流量标识: "+ str(info['flow'])+" 有效载荷长度:"+ str(info['payload_len'])+\
@@ -754,7 +790,7 @@ class sniffer(QDialog, Ui_snifferUI):
                        self.textEdit.append("<pre> 目的地址："+str(info['dst'])+ "</pre>")
                        self.textEdit.append("<h3>"+"IGMP协议:" +"</pre>")
                        self.textEdit.append("<pre>"+" 类型: "+str(info['type'])+" 最大响应延迟："+str(info['maxresp'])+" 校验和： "+str(info['checksum'])+" 组地址:"+str(info['group'])+ "</pre>")
-                       self.textEdit_2.setPlainText(bytes(data))
+                       self.textEdit_2.setPlainText((data))
 
         else:
              print "error"

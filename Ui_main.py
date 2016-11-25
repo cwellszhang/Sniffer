@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/Users/zcw/Sniffer/main.ui'
+# Form implementation generated from reading ui file '/Users/zcw/Documents/Sniffer/main.ui'
 #
 # Created by: PyQt5 UI code generator 5.7
 #
@@ -11,7 +11,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_snifferUI(object):
     def setupUi(self, snifferUI):
         snifferUI.setObjectName("snifferUI")
-        snifferUI.resize(1047, 814)
+        snifferUI.setEnabled(True)
+        snifferUI.resize(1047, 813)
+        snifferUI.setMaximumSize(QtCore.QSize(1047, 814))
         self.label = QtWidgets.QLabel(snifferUI)
         self.label.setGeometry(QtCore.QRect(30, 20, 60, 16))
         self.label.setObjectName("label")
@@ -58,7 +60,7 @@ class Ui_snifferUI(object):
         self.package_info.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.package_info.setDragDropOverwriteMode(False)
         self.package_info.setAlternatingRowColors(True)
-        self.package_info.setSelectionMode(QtWidgets.QAbstractItemView.ContiguousSelection)
+        self.package_info.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.package_info.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.package_info.setShowGrid(False)
         self.package_info.setGridStyle(QtCore.Qt.DashLine)
@@ -101,11 +103,15 @@ class Ui_snifferUI(object):
         self.textEdit.setObjectName("textEdit")
         self.textEdit_2 = QtWidgets.QTextEdit(snifferUI)
         self.textEdit_2.setGeometry(QtCore.QRect(10, 698, 601, 101))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        self.textEdit_2.setFont(font)
         self.textEdit_2.setObjectName("textEdit_2")
         self.actionMenubar = QtWidgets.QAction(snifferUI)
         self.actionMenubar.setObjectName("actionMenubar")
 
         self.retranslateUi(snifferUI)
+        self.btn_exit.clicked.connect(snifferUI.close)
         QtCore.QMetaObject.connectSlotsByName(snifferUI)
 
     def retranslateUi(self, snifferUI):
@@ -116,8 +122,8 @@ class Ui_snifferUI(object):
         self.btn_stop.setText(_translate("snifferUI", "停止抓包"))
         self.btn_filter.setText(_translate("snifferUI", "过滤包"))
         self.btn_search.setText(_translate("snifferUI", "搜索"))
-        self.btn_viewlog.setText(_translate("snifferUI", "查看日志"))
-        self.btn_recover.setText(_translate("snifferUI", "报文重组"))
+        self.btn_viewlog.setText(_translate("snifferUI", "查看全部"))
+        self.btn_recover.setText(_translate("snifferUI", "文件重组"))
         self.btn_save.setText(_translate("snifferUI", "保存TXT"))
         self.btn_exit.setText(_translate("snifferUI", "退出"))
         self.label_2.setText(_translate("snifferUI", "网络流量："))
