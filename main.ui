@@ -310,10 +310,10 @@
   <widget class="QTextBrowser" name="textBrowser_2">
    <property name="geometry">
     <rect>
-     <x>620</x>
-     <y>500</y>
-     <width>411</width>
-     <height>301</height>
+     <x>0</x>
+     <y>700</y>
+     <width>1041</width>
+     <height>101</height>
     </rect>
    </property>
   </widget>
@@ -330,10 +330,10 @@
   <widget class="QTextEdit" name="textEdit_2">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>698</y>
-     <width>601</width>
-     <height>101</height>
+     <x>610</x>
+     <y>500</y>
+     <width>431</width>
+     <height>201</height>
     </rect>
    </property>
    <property name="font">

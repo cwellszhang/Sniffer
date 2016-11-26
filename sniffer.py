@@ -27,6 +27,7 @@ class sniffer(QDialog, Ui_snifferUI):
     package_udp={}
     package_icmp={}
 
+    file_tcp={}
     def __init__(self, parent=None):
         super(sniffer, self).__init__(parent)
         self.setupUi(self)
@@ -67,6 +68,13 @@ class sniffer(QDialog, Ui_snifferUI):
     def del_pkg_udp(self,id):
         self.package_udp.pop(id)
 
+    def get_file_tcp(self):
+        return self.file_tcp
+    def set_file_tcp(self,tcp):
+        self.file_tcp = tcp
+    def del_file_tcp(self,id):
+        self.file_tcp.pop(id)
+
     def get_btnStop(self):
          return self.btn_stop
     def set_btnStop(self, stop):
@@ -87,7 +95,7 @@ class sniffer(QDialog, Ui_snifferUI):
 
         package['timestamp']=timestamp
         package['len']=len(buf)
-        org= dpkt.hexdump(str(buf), 10)
+        org= dpkt.hexdump(str(buf), 20)
         package['buf']=org
         #print type(buf)
         eth = dpkt.ethernet.Ethernet(buf)
@@ -138,7 +146,7 @@ class sniffer(QDialog, Ui_snifferUI):
 
 
              ip6 = eth.data
-             print 'get 6' + str(ip6.nxt)
+             #print 'get 6' + str(ip6.nxt)
              package['ip_ver'] = 6
              #IP6包解析
              info['fc']= ip6.fc              #优先级
@@ -153,8 +161,6 @@ class sniffer(QDialog, Ui_snifferUI):
                   print 'return '
                   return
              package['ipv6_info']= info
-             print package
-             #if isinstance(ip6.data, dpkt.icmp.ICMP):
 
              if ip6.nxt == 1:
                    icmp = ip6.data
@@ -342,7 +348,8 @@ class sniffer(QDialog, Ui_snifferUI):
            elif isinstance(ip.data, dpkt.tcp.TCP):
              tcp = ip.data
              package['protocol']='TCP'
-
+             if isinstance(ip.data,dpkt.tftp.TFTP):
+                 print 'ftp'
              info['sport']=tcp.sport    #源端口
              info['dport']=tcp.dport    #目的端口
              info['seq']= tcp.seq       #seq
@@ -376,6 +383,7 @@ class sniffer(QDialog, Ui_snifferUI):
                  for slice in list:
                         data = data+slice['ip_data']
                  #组装完成
+                 print "组装完成:"+data
                  data= data
                  info['data']=data
                  package['info']=info
@@ -517,10 +525,10 @@ class sniffer(QDialog, Ui_snifferUI):
                    print 'rule:'+rule
                    pc=pcap(self.choose_eth.currentText(), immediate=True)
                    pc.setfilter(rule)
-                   pc.loop(3,self.deal_package)
+                   pc.loop(1000,self.deal_package)
                else:
                    print 'no rule'
-                   pcap(self.choose_eth.currentText(), immediate=True).loop(1,self.deal_package)
+                   pcap(self.choose_eth.currentText(), immediate=True).loop(10,self.deal_package)
            except Exception, e:
                    QMessageBox.information(self,"Error Message",e);
                    print e
@@ -547,30 +555,34 @@ class sniffer(QDialog, Ui_snifferUI):
 
     @pyqtSlot()
     def on_btn_filter_clicked(self):
-        list = ["指定源IP地址","指定目的IP地址", "指定源端口","指定目的端口","指定协议类型"]
+        list = ["指定源IP地址","指定目的IP地址", "指定源端口","指定目的端口","指定协议类型","自定义规则"]
 
          #第三个参数可选 有一般显示 （QLineEdit.Normal）、密碼显示（ QLineEdit. Password）与不回应文字输入（ QLineEdit. NoEcho）
         #stringNum,ok3 = QInputDialog.getText(self, "标题","姓名:",QLineEdit.Normal, "王尼玛")
          #1为默认选中选项目，True/False  列表框是否可编辑。
         item, ok = QInputDialog.getItem(self, "选项","规则列表", list, 1, False)
         type=0
-        if item=="指定源IP地址":
-             filter,ok_1 = QInputDialog.getText(self, "标题","请输入指定源IP地址:",QLineEdit.Normal, "*.*.*.*")
-             rule = "src host "+filter
-        elif item =="指定目的IP地址"  :
-             filter,ok_2 = QInputDialog.getText(self, "标题","请输入指定目的IP地址:",QLineEdit.Normal, "*.*.*.*")
-             rule= "dst host "+filter
-        elif item =="指定源端口":
-             filter,ok_3 = QInputDialog.getInt(self, "标题","请输入指定源端口:",80, 0, 65535)
-             rule="src port "+str(filter)
-        elif item =="指定目的端口":
-             filter,ok_4 = QInputDialog.getInt(self, "标题","请输入指定目的端口:",80, 0, 65535)
-             rule ="dst port "+str(filter)
-        elif item =="指定协议类型" :
-             filter,ok_2 = QInputDialog.getText(self, "标题","请输入指定协议类型:",QLineEdit.Normal, "icmp")
-             rule =filter
-        rule=rule.lower()
-        self.set_filter(rule)
+        if ok:
+            if item=="指定源IP地址":
+                 filter,ok_1 = QInputDialog.getText(self, "标题","请输入指定源IP地址:",QLineEdit.Normal, "*.*.*.*")
+                 rule = "src host "+filter
+            elif item =="指定目的IP地址"  :
+                 filter,ok_2 = QInputDialog.getText(self, "标题","请输入指定目的IP地址:",QLineEdit.Normal, "*.*.*.*")
+                 rule= "dst host "+filter
+            elif item =="指定源端口":
+                 filter,ok_3 = QInputDialog.getInt(self, "标题","请输入指定源端口:",80, 0, 65535)
+                 rule="src port "+str(filter)
+            elif item =="指定目的端口":
+                 filter,ok_4 = QInputDialog.getInt(self, "标题","请输入指定目的端口:",80, 0, 65535)
+                 rule ="dst port "+str(filter)
+            elif item =="指定协议类型" :
+                 filter,ok_2 = QInputDialog.getText(self, "标题","请输入指定协议类型:",QLineEdit.Normal, "icmp")
+                 rule =filter
+            elif item =="自定义规则":
+                 filter,ok_2 = QInputDialog.getText(self, "标题","请输入规则:",QLineEdit.Normal, "host 202.120.2.1")
+                 rule=filter
+            rule=rule.lower()
+            self.set_filter(rule)
 
     @pyqtSlot()
     def on_btn_search_clicked(self):
@@ -590,17 +602,86 @@ class sniffer(QDialog, Ui_snifferUI):
                     else:
                       print 'data find=' + data
 
-
+    #查看全部抓包日志
     @pyqtSlot()
     def on_btn_viewlog_clicked(self):
         current= self.package_info.rowCount()
         for row in range(current):
           self.package_info.setRowHidden(row,False)
 
+    #文件重组
     @pyqtSlot()
     def on_btn_recover_clicked(self):
-       pass
+       #重组文件时暂停抓包
+       # self.btn_stop=True
+       #遍历TCP包 寻找满足条件的包：源目的地址相同，源目的端口相同，包数据部分非空
+       #进行传输标识进行重组
+       current= self.package_info.rowCount()
 
+
+       for row in range(current):
+         if (self.package_info.item(row, 6)):
+           package = json.loads(self.package_info.item(row, 6).text())
+           protocol = package['protocol']
+           if package is not None and protocol =="TCP":
+                ip_ver = package['ip_ver']
+                src_ip = package['src_ip']
+                dst_ip = package['dst_ip']
+                id = package['ip_id']
+                info=package['info']
+                sport = info['sport']
+                dport = info['dport']
+                #形成特征字段
+                tmp_pkt_tcp={}
+                pkg={}
+                key = str(ip_ver)+str(src_ip)+str(dst_ip)+str(sport)+str(dport)
+                print key
+                pkg['tcp_data']=bytes(self.package_info.item(row, 7).text())
+                pkg['id']=id
+                #如果含有特征字段，则继续往后添加
+                if self.get_file_tcp().has_key(key):
+                  list = []
+                  for i in self.get_file_tcp()[key] :
+                      list.append(i)
+                  list.append(pkg)
+                  print len(list)
+
+                #如果不含特征字段，
+                else:
+                  if len(self.package_info.item(row, 7).text())<100:
+                        print 'len<100,so continue'
+                        continue
+                  else:
+                      list=[]
+                      list.append(pkg)
+                tmp_pkt_tcp[key]=list
+                # print tmp_pkt_tcp
+                self.set_file_tcp(tmp_pkt_tcp)
+                print 'package length= '+ str(len(self.get_file_tcp()))
+       # print self.get_file_tcp()
+       if len(self.get_file_tcp())>=1:
+                for key in  self.get_file_tcp().keys():
+                     list = self.get_file_tcp()[key]
+                     data = ''
+                     list.sort(key=lambda k:k.get('id')) #按照offset大小排序
+                     print list
+                     for slice in list:
+                            data = data+slice['tcp_data']
+                     #组装完成
+                     print data
+                     self.del_file_tcp(key)
+                     file = open('./'+key, 'w')
+                     file.write(data)
+                     file.close()
+                     QMessageBox.information(self,"提示","文件重组成功:"+key)
+       else:
+            QMessageBox.information(self,"提示","找不到可重组的包！")
+
+
+
+
+
+    #选中信息保存文件
     @pyqtSlot()
     def on_btn_save_clicked(self):
         fileName, ok = QFileDialog.getSaveFileName(self,"文件保存","./","All Files (*);;Text Files (*.txt)")
@@ -679,7 +760,7 @@ class sniffer(QDialog, Ui_snifferUI):
                    #
 
                    self.textEdit_2.setPlainText(data)
-                   self.textEdit.append("<pre> 抓包时间："+package['timestamp']+"</pre>")
+                   #self.textEdit.append("<pre> 抓包时间："+package['timestamp']+"</pre>")
              elif ip_ver == 6 :
                    info=package['info']
                    # ipv6头部信息
@@ -696,7 +777,7 @@ class sniffer(QDialog, Ui_snifferUI):
 
 
                    self.textEdit_2.setPlainText(data)
-                   self.textEdit.append("<pre> 抓包时间："+package['timestamp']+"</pre>")
+                   #self.textEdit.append("<pre> 抓包时间："+package['timestamp']+"</pre>")
 
 
 
@@ -705,14 +786,13 @@ class sniffer(QDialog, Ui_snifferUI):
                    self.textBrowser_2.append("<pre>"+ buf+"</pre>")
                    info=package['info']
                    if ip_ver ==4:
-                       self.textEdit.append("<h3> IP首部:       IP version 4 "+"</h3>")
+                       self.textEdit.append("<h5> IP首部:       IP version 4 "+"</h5>")
                        self.textEdit.append("<pre> 头长度:" + str(package['ip_hl'])  + \
                                            " 服务类型："+str(package['ip_tos'])+" 总长度："+ str(package['ip_len'])+" 标识："+str(package['ip_id'])+ \
-                                           " DF标志位:"+str(package['ip_DF'])+" MF标志位:"+str(package['ip_MF'])+" 分段偏移量:"+str(package['ip_offset'])+"</pre>" )
-                       self.textEdit.append("<pre> 生存期:"+ str(package['ip_ttl'])+" 协议类型:" + str(package['ip_protocol'])+" 头部校验和:"+str(package['ip_sum'])+"</pre>" )
+                                           " DF标志位:"+str(package['ip_DF'])+" MF标志位:"+str(package['ip_MF'])+" 分段偏移量:"+str(package['ip_offset'])+\
+                                           " 生存期:"+ str(package['ip_ttl'])+" 协议类型:" + str(package['ip_protocol'])+" 头部校验和:"+str(package['ip_sum'])+"</pre>" )
                        self.textEdit.append("<pre> 源地址: "+str(package['src_ip'])+" 目的地址: "+str(package['dst_ip'])+"</pre>")
-
-                       self.textEdit.append("<h3> TCP协议:"+"</h3>")
+                       self.textEdit.append("<h5> TCP协议:"+"</h5>")
                        self.textEdit.append("<pre> 源端口: "+str(info['sport']) +"  目的端口："+str(info['dport'])+\
                                             " seq："+str(info['seq']) + " ack："+str(info['ack'])+"</pre>")
 
@@ -722,17 +802,16 @@ class sniffer(QDialog, Ui_snifferUI):
                        self.textEdit_2.setPlainText(data)
                    elif ip_ver == 6 :
 
-                       self.textEdit.append("<h3> IP首部:       IP version 6 "+"</h3>")
+                       self.textEdit.append("<h5> IP首部:       IP version 6 "+"</h5>")
                        self.textEdit.append("<pre> 优先级:"+str(info['fc'])+" 流量标识: "+ str(info['flow'])+" 有效载荷长度:"+ str(info['payload_len'])+\
                                                  " 下一包头："+str(info['next_hdr'])+" 跳数限制："+str(info['hop_lim'])+"</pre>" )
                        self.textEdit.append("<pre> 起始地址："+str(info['src']) +"</pre>")
                        self.textEdit.append("<pre> 目的地址："+str(info['dst'])+ "</pre>")
 
-                       self.textEdit.append("<h3> TCP协议:"+"</h3>")
+                       self.textEdit.append("<h5> TCP协议:"+"</h5>")
                        self.textEdit.append("<pre> 源端口: "+str(info['sport']) +"  目的端口："+str(info['dport'])+\
-                                            " seq："+str(info['seq']) + " ack："+str(info['ack'])+"</pre>")
-
-                       self.textEdit.append("<pre> 标记: "+str(info['flags']) +"  窗口大小："+str(info['window'])+\
+                                            " seq："+str(info['seq']) + " ack："+str(info['ack'])+\
+                                            " 标记: "+str(info['flags']) +"  窗口大小："+str(info['window'])+\
                                             " 标记类型："+','.join(info['packet_type']) + " 校验和："+str(info['checksum'])+"</pre>")
 
                        self.textEdit_2.setPlainText(data)

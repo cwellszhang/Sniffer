@@ -1,34 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-6.0.dtd">
 <!-- eric6 tasks file for project sniffer -->
-<!-- Saved: 2016-11-25, 20:36:40 -->
+<!-- Saved: 2016-11-26, 16:03:13 -->
 <Tasks version="6.0">
   <ProjectScanFilter></ProjectScanFilter>
-  <Task priority="1" completed="False" type="1" uid="{ad866b9e-4c30-4c2b-a359-7802af6f9532}">
-    <Summary>TODO: not implemented yet</Summary>
-    <Description></Description>
-    <Created>2016-11-25, 20:36:37</Created>
-    <Resource>
-      <Filename>temptable.py</Filename>
-      <Linenumber>37</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" type="1" uid="{6afa1d9b-c326-44b1-9470-48c206eb1529}">
-    <Summary>TODO: not implemented yet</Summary>
-    <Description></Description>
-    <Created>2016-11-25, 20:36:37</Created>
-    <Resource>
-      <Filename>temptable.py</Filename>
-      <Linenumber>50</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" type="1" uid="{884916b7-136d-4221-9e29-d5742ec59cea}">
-    <Summary>TODO: not implemented yet</Summary>
-    <Description></Description>
-    <Created>2016-11-25, 20:36:37</Created>
-    <Resource>
-      <Filename>temptable.py</Filename>
-      <Linenumber>63</Linenumber>
-    </Resource>
-  </Task>
 </Tasks>
