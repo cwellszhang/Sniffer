@@ -90,7 +90,7 @@
   <widget class="QPushButton" name="btn_viewlog">
    <property name="geometry">
     <rect>
-     <x>550</x>
+     <x>540</x>
      <y>60</y>
      <width>113</width>
      <height>32</height>
@@ -103,7 +103,7 @@
   <widget class="QPushButton" name="btn_recover">
    <property name="geometry">
     <rect>
-     <x>690</x>
+     <x>660</x>
      <y>60</y>
      <width>113</width>
      <height>32</height>
@@ -116,20 +116,20 @@
   <widget class="QPushButton" name="btn_save">
    <property name="geometry">
     <rect>
-     <x>820</x>
+     <x>780</x>
      <y>60</y>
      <width>113</width>
      <height>32</height>
     </rect>
    </property>
    <property name="text">
-    <string>保存TXT</string>
+    <string>保存</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_exit">
    <property name="geometry">
     <rect>
-     <x>530</x>
+     <x>540</x>
      <y>20</y>
      <width>113</width>
      <height>32</height>
@@ -137,32 +137,6 @@
    </property>
    <property name="text">
     <string>退出</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>910</x>
-     <y>30</y>
-     <width>60</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>网络流量：</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_3">
-   <property name="geometry">
-    <rect>
-     <x>980</x>
-     <y>30</y>
-     <width>60</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>0 Kb/s</string>
    </property>
   </widget>
   <widget class="QComboBox" name="choose_eth">
@@ -340,6 +314,19 @@
     <font>
      <family>Arial</family>
     </font>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_clear_history">
+   <property name="geometry">
+    <rect>
+     <x>900</x>
+     <y>60</y>
+     <width>113</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>清屏</string>
    </property>
   </widget>
   <action name="actionMenubar">

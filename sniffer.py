@@ -31,8 +31,8 @@ class sniffer(QDialog, Ui_snifferUI):
     def __init__(self, parent=None):
         super(sniffer, self).__init__(parent)
         self.setupUi(self)
-        #global q
-        #q = Queue.Queue()
+        # global q
+        # q = Queue.Queue()
 
         super(sniffer, self).__init__(parent)
         self.setupUi(self)
@@ -85,6 +85,8 @@ class sniffer(QDialog, Ui_snifferUI):
     def get_filter(self):
          return self.filter
     def deal_package(self,timestamp,pkg):
+        if(self.get_btnStop()==True):
+            return
         package={}
         info={}
         timestamp,buf = timestamp,pkg
@@ -525,10 +527,10 @@ class sniffer(QDialog, Ui_snifferUI):
                    print 'rule:'+rule
                    pc=pcap(self.choose_eth.currentText(), immediate=True)
                    pc.setfilter(rule)
-                   pc.loop(1000,self.deal_package)
+                   pc.loop(-1,self.deal_package)
                else:
                    print 'no rule'
-                   pcap(self.choose_eth.currentText(), immediate=True).loop(10,self.deal_package)
+                   pcap(self.choose_eth.currentText(), immediate=True).loop(-1,self.deal_package)
            except Exception, e:
                    QMessageBox.information(self,"Error Message",e);
                    print e
@@ -537,16 +539,20 @@ class sniffer(QDialog, Ui_snifferUI):
     @pyqtSlot()
     def on_btn_begin_clicked(self):
          self.set_btnStop(False)
-
          print '设置符号为:', self.btn_stop
          th =threading.Thread(target = self.package_reader)
          th.start()
 
 
-
-
-
-
+    @pyqtSlot()
+    def on_btn_clear_history_clicked(self):
+        ## 清屏
+        self.textEdit.clear()
+        self.textEdit_2.clear()
+        self.textBrowser_2.clear()
+        #self.package_info.clear()
+        self.package_info.setRowCount(0)
+        self.package_info.removeRow(0)
     @pyqtSlot()
     def on_btn_stop_clicked(self):
         self.set_btnStop(True)
@@ -618,62 +624,97 @@ class sniffer(QDialog, Ui_snifferUI):
        #进行传输标识进行重组
        current= self.package_info.rowCount()
 
-
+       tmp_pkt_name=[]
        for row in range(current):
          if (self.package_info.item(row, 6)):
            package = json.loads(self.package_info.item(row, 6).text())
            protocol = package['protocol']
            if package is not None and protocol =="TCP":
                 ip_ver = package['ip_ver']
-                src_ip = package['src_ip']
-                dst_ip = package['dst_ip']
-                id = package['ip_id']
                 info=package['info']
+                if ip_ver ==4:
+                   src_ip = package['src_ip']
+                   dst_ip = package['dst_ip']
+                   id = package['ip_id']
+                else:
+                   src_ip = info['src']
+                   dst_ip = info['dst']                
                 sport = info['sport']
                 dport = info['dport']
                 #形成特征字段
-                tmp_pkt_tcp={}
                 pkg={}
                 key = str(ip_ver)+str(src_ip)+str(dst_ip)+str(sport)+str(dport)
                 print key
                 pkg['tcp_data']=bytes(self.package_info.item(row, 7).text())
+                f_retr = r'RETR\s+'
+                f_stor = r'STOR\s+'
+                if pkg['tcp_data'] and (dport ==21 or sport ==21):
+                     s = re.search(f_retr,pkg['tcp_data'])
+                     if s is not None :
+                         file_name=pkg['tcp_data'].replace('RETR ','')
+                         tmp_pkt_name.append(file_name)
+                         print file_name
+                if pkg['tcp_data'] and (dport == 21 or sport ==21):
+                     s = re.search(f_stor,pkg['tcp_data'])
+                     if s is not None :
+                         file_name=pkg['tcp_data'].replace('STOR ','')
+                         tmp_pkt_name.append(file_name)
+                         print file_name
                 pkg['id']=id
                 #如果含有特征字段，则继续往后添加
                 if self.get_file_tcp().has_key(key):
                   list = []
                   for i in self.get_file_tcp()[key] :
                       list.append(i)
+                  if(len(tmp_pkt_name)>=1):
+                   pkg['filename']=tmp_pkt_name[0]
+                   tmp_pkt_name.pop(0)
+
                   list.append(pkg)
                   print len(list)
-
                 #如果不含特征字段，
                 else:
                   if len(self.package_info.item(row, 7).text())<100:
-                        print 'len<100,so continue'
+                        #print 'len<100,so continue'
                         continue
                   else:
                       list=[]
                       list.append(pkg)
-                tmp_pkt_tcp[key]=list
-                # print tmp_pkt_tcp
-                self.set_file_tcp(tmp_pkt_tcp)
-                print 'package length= '+ str(len(self.get_file_tcp()))
+                _ = self.get_file_tcp()
+                _[key]=list
+                self.set_file_tcp(_)
+                #print 'package length= '+ str(len(self.get_file_tcp()))
        # print self.get_file_tcp()
+       #print 'package length= '+ str(len(self.get_file_tcp()))
        if len(self.get_file_tcp())>=1:
                 for key in  self.get_file_tcp().keys():
                      list = self.get_file_tcp()[key]
                      data = ''
+                     #TODO SECOND
+                     recover=[]
+                     file_name_= None
+                     print 'list lst='+str(list)
+                     for i in list: #便利list中的字典
+                         if i.has_key('filename'): #如果存在文件名的项
+                              file_name_ = i['filename']
+                         elif i.has_key('id'):
+                             recover.append(i)
+                     if file_name_ is None:
+                          continue
+                     list =recover
                      list.sort(key=lambda k:k.get('id')) #按照offset大小排序
-                     print list
+                     #print list
                      for slice in list:
                             data = data+slice['tcp_data']
                      #组装完成
-                     print data
+                     #print data
                      self.del_file_tcp(key)
-                     file = open('./'+key, 'w')
+                     #if file_name_ is None :
+                     #    file_name_ = key
+                     file = open('./'+file_name_, 'w')
                      file.write(data)
                      file.close()
-                     QMessageBox.information(self,"提示","文件重组成功:"+key)
+                     QMessageBox.information(self,"提示","文件重组成功:"+file_name_)
        else:
             QMessageBox.information(self,"提示","找不到可重组的包！")
 
