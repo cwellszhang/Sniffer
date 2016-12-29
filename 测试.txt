@@ -1,0 +1,98 @@
+抓包时间:17:56:52
+协议:TCP   IP首部:IP version 4  头长度:5 服务类型：0 总长度：456 标识：44581 DF标志位:True MF标志位:False 分段偏移量:0
+生存期:58 协议类型:6 头部校验和:24502
+源地址: 202.121.178.179 目的地址: 10.189.169.106
+TCP协议: 源端口: 80  目的端口：50109 seq：3305028247 ack：234397341824  窗口大小：252 标记类型：PSH,ACK 校验和：22043
+HTTP/1.1 302 Moved Temporarily
+Server: nginx
+Date: Wed, 28 Dec 2016 09:56:52 GMT
+Content-Type: text/html
+Content-Length: 154
+Connection: keep-alive
+Location: https://tongqu.me/upload/acts/20161214/origin_fc8ebe5cc59ef5fb895133a073973d1c.jpg
+
+<html>
+<head><title>302 Found</title></head>
+<body bgcolor="white">
+<center><h1>302 Found</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+
+抓包时间:17:56:52
+协议:TCP   IP首部:IP version 4  头长度:5 服务类型：0 总长度：456 标识：35309 DF标志位:True MF标志位:False 分段偏移量:0
+生存期:58 协议类型:6 头部校验和:33774
+源地址: 202.121.178.179 目的地址: 10.189.169.106
+TCP协议: 源端口: 80  目的端口：50106 seq：3022882798 ack：360767340824  窗口大小：252 标记类型：PSH,ACK 校验和：18836
+HTTP/1.1 302 Moved Temporarily
+Server: nginx
+Date: Wed, 28 Dec 2016 09:56:52 GMT
+Content-Type: text/html
+Content-Length: 154
+Connection: keep-alive
+Location: https://tongqu.me/upload/acts/20161212/origin_69fed1b584f13d7a2893b20bb6dea2ab.jpg
+
+<html>
+<head><title>302 Found</title></head>
+<body bgcolor="white">
+<center><h1>302 Found</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+
+抓包时间:17:56:52
+协议:TCP   IP首部:IP version 4  头长度:5 服务类型：0 总长度：557 标识：32988 DF标志位:True MF标志位:False 分段偏移量:0
+生存期:64 协议类型:6 头部校验和:34458
+源地址: 10.189.169.106 目的地址: 202.121.178.179
+TCP协议: 源端口: 50108  目的端口：80 seq：2489782240 ack：319434104524  窗口大小：4096 标记类型：PSH,ACK 校验和：6324
+GET /upload/acts/20161210/origin_6ebcfc39d117955aea384c0a410076e9.jpg HTTP/1.1
+Host: tongqu.me
+Accept-Encoding: gzip, deflate
+Cookie: tq_ci_session_id=fb434d127d3ec1c2f72813a734a44b01; Hm_lvt_fcd79bd95b6da3b03dfe6cbc0dd48b21=1482479865,1482479868,1482824851,1482824854
+Connection: keep-alive
+Accept: */*
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/602.2.14 (KHTML, like Gecko) Version/10.0.1 Safari/602.2.14
+Accept-Language: zh-cn
+Referer: http://tongqu.me/
+DNT: 1
+
+
+
+抓包时间:17:56:52
+协议:TCP   IP首部:IP version 4  头长度:5 服务类型：0 总长度：557 标识：9840 DF标志位:True MF标志位:False 分段偏移量:0
+生存期:64 协议类型:6 头部校验和:57606
+源地址: 10.189.169.106 目的地址: 202.121.178.179
+TCP协议: 源端口: 50106  目的端口：80 seq：3607672903 ack：302288279824  窗口大小：4096 标记类型：PSH,ACK 校验和：43638
+GET /upload/acts/20161212/origin_69fed1b584f13d7a2893b20bb6dea2ab.jpg HTTP/1.1
+Host: tongqu.me
+Accept-Encoding: gzip, deflate
+Cookie: tq_ci_session_id=fb434d127d3ec1c2f72813a734a44b01; Hm_lvt_fcd79bd95b6da3b03dfe6cbc0dd48b21=1482479865,1482479868,1482824851,1482824854
+Connection: keep-alive
+Accept: */*
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/602.2.14 (KHTML, like Gecko) Version/10.0.1 Safari/602.2.14
+Accept-Language: zh-cn
+Referer: http://tongqu.me/
+DNT: 1
+
+
+
+抓包时间:17:56:52
+协议:TCP   IP首部:IP version 4  头长度:5 服务类型：0 总长度：557 标识：34821 DF标志位:True MF标志位:False 分段偏移量:0
+生存期:64 协议类型:6 头部校验和:32625
+源地址: 10.189.169.106 目的地址: 202.121.178.179
+TCP协议: 源端口: 50109  目的端口：80 seq：2343972913 ack：330502824724  窗口大小：4096 标记类型：PSH,ACK 校验和：55536
+GET /upload/acts/20161214/origin_fc8ebe5cc59ef5fb895133a073973d1c.jpg HTTP/1.1
+Host: tongqu.me
+Accept-Encoding: gzip, deflate
+Cookie: tq_ci_session_id=fb434d127d3ec1c2f72813a734a44b01; Hm_lvt_fcd79bd95b6da3b03dfe6cbc0dd48b21=1482479865,1482479868,1482824851,1482824854
+Connection: keep-alive
+Accept: */*
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/602.2.14 (KHTML, like Gecko) Version/10.0.1 Safari/602.2.14
+Accept-Language: zh-cn
+Referer: http://tongqu.me/
+DNT: 1
+
+
+

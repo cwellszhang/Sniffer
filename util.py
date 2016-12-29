@@ -25,6 +25,7 @@ def inet_to_str(inet):
     except ValueError:
         return socket.inet_ntop(socket.AF_INET6, inet)
 
+
 def deal_save(package,data):
     #Convert the  package to a readable format
         protocol = package['protocol']

@@ -297,32 +297,42 @@ class sniffer(QDialog, Ui_snifferUI):
              info['code']=icmp.code       #代码
              info['checksum']=icmp.sum    #校验和
              pkg={}
+             data=icmp.data
              pkg['ip_offset']=ip.offset
              pkg['ip_MF'] = ip.mf
              tmp_pkt_icmp={}
              if(ip.offset!=0 and ip.mf==0):
                  print 'end of package'
                  list = self.get_pkg_icmp()[ip.id]
-                 data = ''
                  offset = []
                  list.sort(key=lambda k:k.get('ip_offset')) #按照offset大小排序
+                 print len(list)
+                 data=''
                  for slice in list:
                       if isinstance(slice['ip_data'],dpkt.icmp.ICMP.Echo):
                           data = data+(slice['ip_data']['data'])  # 数据重组
+                          print'echo'
                       elif isinstance(slice['ip_data'],dpkt.icmp.ICMP.Unreach):
                           data = data+slice['ip_data']['data']
+                          print'unreach'
                       elif isinstance(slice['ip_data'],dpkt.icmp.ICMP.Quench):
                            data= data+slice['ip_data']['data']
+                           print'quench'
                       elif isinstance(slice['ip_data'],dpkt.icmp.ICMP.Redirect):
                            data= data+slice['ip_data']['data']
+                           print'redirect'
                       elif isinstance(slice['ip_data'],dpkt.icmp.ICMP.TimeExceed):
                            data= data+slice['ip_data']['data']
+                           print'timeexceed'
                       else:
                            data = data+slice['ip_data']
+                           print'prue data'
+    
                  #组装完成
-                 data= data.hexdigest()
-                 print "组装数据:"+data
-                 info['data']=data
+                 data=data+icmp.data
+                 #以下为测试分片重组用
+                 #data="数据部分长度:"+str(len(data))
+                 #print "组装数据:"+data
                  package['info']=info
                  self.del_pkg_icmp(ip.id)
             # 收集分片
@@ -342,9 +352,10 @@ class sniffer(QDialog, Ui_snifferUI):
                 self.set_pkg_icmp(tmp_pkt_icmp)
                 print 'package length= '+ str(len(self.get_pkg_icmp()))
                 #清空数据，等待组装完毕再返回
-                package.clear()
+                package['info']=info
              else:
                 #如果不涉及ip分片,则直接返回
+                print '不涉及分片'
                 package['info']=info
 
            elif isinstance(ip.data, dpkt.tcp.TCP):
@@ -385,7 +396,7 @@ class sniffer(QDialog, Ui_snifferUI):
                  for slice in list:
                         data = data+slice['ip_data']
                  #组装完成
-                 print "组装完成:"+data
+                 print data
                  data= data
                  info['data']=data
                  package['info']=info
@@ -527,12 +538,12 @@ class sniffer(QDialog, Ui_snifferUI):
                    print 'rule:'+rule
                    pc=pcap(self.choose_eth.currentText(), immediate=True)
                    pc.setfilter(rule)
-                   pc.loop(-1,self.deal_package)
+                   pc.loop(10,self.deal_package)
                else:
                    print 'no rule'
-                   pcap(self.choose_eth.currentText(), immediate=True).loop(-1,self.deal_package)
+                   pcap(self.choose_eth.currentText(), immediate=True).loop(5,self.deal_package)
            except Exception, e:
-                   QMessageBox.information(self,"Error Message",e);
+                   #QMessageBox.information(self,"提示","出现错误")
                    print e
                    self.set_filter("-1")
 
@@ -597,6 +608,7 @@ class sniffer(QDialog, Ui_snifferUI):
         if ok and filter:
           self.set_btnStop(True)
           for row in range(self.package_info.rowCount()):
+            if(self.package_info.item(row, 7))!=None:
               data = bytes((self.package_info.item(row, 7).text()))
               if data is None :
                       self.package_info.setRowHidden(row,True)
@@ -762,11 +774,13 @@ class sniffer(QDialog, Ui_snifferUI):
     def on_package_info_cellClicked(self, row, column):
       self.textEdit.clear()
       self.textBrowser_2.clear()
+      data=''
       if self.package_info.item(row, 6) != None:
         package = json.loads(self.package_info.item(row, 6).text())
         protocol = package['protocol']
-        data = self.package_info.item(row, 7).text()
-        print data
+        if self.package_info.item(row, 7)!= None:
+            data = self.package_info.item(row, 7).text()
+            print data
 
         if protocol != 'ARP':
              ip_ver = package['ip_ver']
