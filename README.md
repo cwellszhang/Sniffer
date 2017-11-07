@@ -65,7 +65,7 @@ python sniffer finished with QT5
   4. 支持批量数据包的本地保存  
   5. 其他功能包括IP分片重组、文件重组、指定字段查询。  
 
-部份功能截图
+部份功能效果
 ========
 *  抓包
   ![images](https://github.com/paradise6/Sniffer/blob/master/images/pic2.png)
