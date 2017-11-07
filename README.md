@@ -60,21 +60,27 @@ python sniffer finished with QT5
 功能说明：
 ===========   
 1. 网卡选择  
+
 <img src='https://github.com/paradise6/Sniffer/blob/master/images/pic1.png' align='left' style="zoom:10%" />  
   
 2. 支持TCP、UDP、ICMP、ARP头的解析  
+
 <img src='https://github.com/paradise6/Sniffer/blob/master/images/pic2.png' align='left' style="zoom:10%" />  
  
 3. TCP头
+
 <img src='https://github.com/paradise6/Sniffer/blob/master/images/pic3.png' align='left' style="zoom:10%" />  
   
 4. UDP头
+
 <img src='https://github.com/paradise6/Sniffer/blob/master/images/pic5.png' align='left' style="zoom:10%" />    
   
 5. 支持包过滤功能,包括端口过滤、源目的地址过滤、协议过滤  
+
 <img src='https://github.com/paradise6/Sniffer/blob/master/images/pic6.png' align='left' style="zoom:10%" />  
    
 6. 支持批量数据包的本地保存
+
 <img src='https://github.com/paradise6/Sniffer/blob/master/images/pic7.png' align='left' style="zoom:10%" />  
    
 7. 其他功能包括IP分片重组、文件重组、指定字段查询。
