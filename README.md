@@ -64,6 +64,17 @@ python sniffer finished with QT5
   3. 支持包过滤功能,包括端口过滤、源目的地址过滤、协议过滤  
   4. 支持批量数据包的本地保存  
   5. 其他功能包括IP分片重组、文件重组、指定字段查询。  
+
+部份功能截图
+========
+*  抓包
+  ![images](https://github.com/paradise6/Sniffer/blob/master/images/pic2.png)
   
- 
- 
+*  端口过滤
+  ![images](https://github.com/paradise6/Sniffer/blob/master/images/pic6.png)
+
+*  协议解析
+  ![images](https://github.com/paradise6/Sniffer/blob/master/images/pic5.png)
+
+*  批量保存
+  ![images](https://github.com/paradise6/Sniffer/blob/master/images/pic7.png)
