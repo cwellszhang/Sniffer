@@ -6,7 +6,7 @@ python sniffer finished with QT5
 
 1. 运行环境：
 本程序采用LibPcap抓包库，使用python语言，在macOS系统完成编译，支持macos或linux系统。
---------
+
 
 
 
@@ -24,7 +24,6 @@ python sniffer finished with QT5
   
   
   
---------
 
 3. 安装说明：
 
@@ -32,7 +31,7 @@ python sniffer finished with QT5
         brew install pyqt5 
      会自动安装所需依赖（qt5\sip\python3）
            
-    ***在LINUX下安装（不推荐），仅安装qt5比较费时，其他都差不多，只需按照2中列出的依赖关系进行安装,但我没有在纯linux下测试过，如果库安装兼容的话理论上是能运行的。
+    - 在LINUX下安装（不推荐），仅安装qt5比较费时，其他都差不多，只需按照2中列出的依赖关系进行安装,但我没有在纯linux下测试过，如果库安装兼容的话理论上是能运行的。
 
    （可选)手动安装Qt5:虽然brew提供了自动安装，但我搭环境的时候还是会出问题，手动安装不会出问题；
     如果发现无法使用的话建议到官网下载安装相应版本，最简安装即可。
@@ -50,7 +49,7 @@ python sniffer finished with QT5
     * 提示：如果自动安装了python3，一定要切换回python2，否则无法运行
     
     
-------
+
 
 
 由于用到了python2、3以及qt5安装的一些动态图形库，使用打包软件时出现很多bug,网上有资料说python打包
