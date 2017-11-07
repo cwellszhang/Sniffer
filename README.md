@@ -57,5 +57,8 @@ python sniffer finished with QT5
 
 所以项目的可执行文件不能脱离系统环境来运行，需要按上面步骤配置好环境以后运行pyc文件或者在终端启动。
  
-4. 功能说明：
-   
+功能说明：
+===========   
+1. 网卡选择
+
+  <img src='https://github.com/paradise6/Sniffer/blob/master/images/pic1.png' align='left' style='width:50px;height:50px;zoom=50%'/>
